@@ -164,13 +164,13 @@ class CompilerIDE(QMainWindow):
             fileName, _ = QFileDialog.getSaveFileName(
             self,"Save File","", "VIC Files (*.vic)")
             if fileName:
-                    with open(fileName, "w", encoding="utf-8") as file:
+                    with open(fileName, "w", encoding="latin-1") as file:
                         file.write(self.editor.toPlainText())
                         self.file_name=fileName
                         self.setWindowTitle(f"ChinchIDE - {fileName}")
         else:
             if fileName:
-                    with open(fileName, "w", encoding="utf-8") as file:
+                    with open(fileName, "w", encoding="latin-1") as file:
                         file.write(self.editor.toPlainText())
                         self.file_name=fileName
                         self.setWindowTitle(f"ChinchIDE - {fileName}")
@@ -195,11 +195,21 @@ class CompilerIDE(QMainWindow):
         if respuesta==QMessageBox.StandardButton.Yes:
             self.saveFile()
 
-        print(len(CompilerIDE.open_windows))
+        print("Numero de ventanas:" + str(len(CompilerIDE.open_windows)))
         if len(CompilerIDE.open_windows)==1:
             sys.exit()
-        if self in CompilerIDE.open_windows:
-            CompilerIDE.open_windows.remove(self)
+
+        index=CompilerIDE.open_windows.index(self)
+        if index==0:
+            self.hide()
+
+        else:
+            if self in CompilerIDE.open_windows:
+                index=CompilerIDE.open_windows.index(self)
+                CompilerIDE.open_windows.remove(self)
+                print(index)
+
+            
    
 
     def saveAsFile(self):
@@ -208,7 +218,7 @@ class CompilerIDE(QMainWindow):
         if fileName:
             if not fileName.endswith(".vic"):
                 fileName+=".vic"
-            with open(fileName, "w", encoding="utf-8") as file:
+            with open(fileName, "w", encoding="latin-1") as file:
                 file.write(self.editor.toPlainText())
                 self.file_name=fileName
                 self.setWindowTitle(f"ChinchIDE - {fileName}")
@@ -222,7 +232,7 @@ class CompilerIDE(QMainWindow):
             return
 
         try:
-            with open(fileName, "r", encoding="utf-8") as file:
+            with open(fileName, "r", encoding="latin-1") as file:
                 contenido = file.read()
                 self.editor.setPlainText(contenido)
                 self.file_name = fileName
