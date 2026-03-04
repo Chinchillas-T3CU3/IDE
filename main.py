@@ -14,6 +14,7 @@ import os
 base_path = os.path.dirname(__file__)
 abrir_icon = os.path.join(base_path, "icons/abrir.png")
 nuevo_icon = os.path.join(base_path, "icons/nuevo.png")
+cerrar_icon = os.path.join(base_path, "icons/cerrar.png")
 guardar_icon = os.path.join(base_path, "icons/guardar.png")
 ejecutar_icon = os.path.join(base_path, "icons/ejecutar.png")
 
@@ -39,6 +40,8 @@ class CompilerIDE(QMainWindow):
 
         # ===== Editor =====
         self.editor = CodeEditor()
+        self.editor.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        self.editor.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         # ===== Tabs de resultados =====
         self.tabs = QTabWidget()
@@ -97,10 +100,13 @@ class CompilerIDE(QMainWindow):
         save_icon_action = QAction(QIcon(guardar_icon), "Save", self)
         save_icon_action.triggered.connect(self.saveFile)
 
+        close_icon_action = QAction(QIcon(cerrar_icon), "Close", self)
+        close_icon_action.triggered.connect(self.closeFile)
+
         compile_icon_action = QAction(QIcon(ejecutar_icon), "Compilar", self)
         compile_icon_action.triggered.connect(self.compileCode)
 
-        # ----- File -----
+        # ----- Archivo -----
         file_menu = menubar.addMenu("Archivo")
 
         new_action = QAction("Nuevo", self)
@@ -135,11 +141,27 @@ class CompilerIDE(QMainWindow):
         compile_action = QAction("Compilar", self)
         compile_action.triggered.connect(self.compileCode)
         build_menu.addAction(compile_action)
+        lexico_action = QAction("Analisis Lexico", self)
+        lexico_action.triggered.connect(self.lexicoCode)
+        build_menu.addAction(lexico_action)
+        sintactic_action = QAction("Analisis Sintactico", self)
+        sintactic_action.triggered.connect(self.SintacticCode)
+        build_menu.addAction(sintactic_action)
+        semantic_action = QAction("Analisis Semantico", self)
+        semantic_action.triggered.connect(self.semanticCode)
+        build_menu.addAction(semantic_action)
+        Tabsimbol_action = QAction("Tabla de Simbolos", self)
+        Tabsimbol_action.triggered.connect(self.TabSimbolCode)
+        build_menu.addAction(compile_action)
+        InterCode_action = QAction("Codigo Intermedio", self)
+        InterCode_action.triggered.connect(self.InterCodeCode)
+        build_menu.addAction(InterCode_action)
 
         #------ iconos ------
         menubar.addAction(open_icon_action)
         menubar.addAction(save_icon_action)
         menubar.addAction(compile_icon_action)
+        menubar.addAction(close_icon_action)
 
 
 
@@ -267,6 +289,28 @@ class CompilerIDE(QMainWindow):
         self.result_compilado.setText("Resultado completo")
 
         QMessageBox.information(self, "Compilación", "Proceso terminado")
+
+    def lexicoCode(self):
+        self.tab_lexico.setText("Resultado análisis léxico")
+        self.error_lexico.setText("Errores de análisis léxico")
+
+    def SintacticCode(self):
+        self.tab_sintactico.setText("Resultado análisis sintáctico")
+        self.error_sintactico.setText("Errores de análisis sintáctico")
+    def semanticCode(self):
+        self.tab_semantico.setText("Resultado análisis semántico")
+        self.error_semantico.setText("Errores de análisis semántico")
+
+    def TabSimbolCode(self):
+        self.tab_tabla.setText("Tabla de símbolos")
+
+    def InterCodeCode(self):
+        self.tab_codigo.setText("Código intermedio generado")
+
+
+
+
+
 
 
 # ===============================

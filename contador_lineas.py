@@ -117,3 +117,8 @@ class CodeEditor(QPlainTextEdit):
             extraSelections.append(selection)
 
         self.setExtraSelections(extraSelections)
+
+    def currentLine(self):
+        pass
+    def currentCol(self):
+        pass
