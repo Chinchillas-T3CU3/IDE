@@ -34,7 +34,9 @@ class CodeEditor(QPlainTextEdit):
         self.blockCountChanged.connect(self.updateLineNumberAreaWidth)
         self.updateRequest.connect(self.updateLineNumberArea)
         self.cursorPositionChanged.connect(self.highlightCurrentLine)
-
+        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+    
         self.updateLineNumberAreaWidth(0)
         self.highlightCurrentLine()
 
@@ -117,8 +119,13 @@ class CodeEditor(QPlainTextEdit):
             extraSelections.append(selection)
 
         self.setExtraSelections(extraSelections)
-
+    # =============
+    # Obtner Lineas
+    # ==============
     def currentLine(self):
-        pass
+        cursor = self.textCursor()
+        return cursor.blockNumber() + 1
+
     def currentCol(self):
-        pass
+        cursor = self.textCursor()
+        return cursor.positionInBlock() + 1
