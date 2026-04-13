@@ -10,6 +10,7 @@ from PyQt6.QtCore import Qt, QRect, QSize
 from PyQt6.QtWidgets import QPlainTextEdit
 from contador_lineas import CodeEditor
 from PyQt6.QtGui import QAction, QIcon
+from lexico import Scanner
 import os
 def resource_path(relative_path):
     try:
@@ -388,7 +389,6 @@ class CompilerIDE(QMainWindow):
     def compileCode(self):
 
         code = self.currentEditor().toPlainText()
-
         # Limpia resultados
         self.tab_lexico.clear()
         self.tab_sintactico.clear()
@@ -400,13 +400,13 @@ class CompilerIDE(QMainWindow):
         self.error_semantico.clear()
         self.result_compilado.clear()
 
+        self.lexicoCode()
+
         # Simulación
-        self.tab_lexico.setText("Resultado análisis léxico")
         self.tab_sintactico.setText("Resultado análisis sintáctico")
         self.tab_semantico.setText("Resultado análisis semántico")
         self.tab_tabla.setText("Tabla de símbolos")
         self.tab_codigo.setText("Código intermedio generado")
-        self.error_lexico.setText("Errores de análisis léxico")
         self.error_sintactico.setText("Errores de análisis sintáctico")
         self.error_semantico.setText("Errores de análisis semántico")
         self.result_compilado.setText("Resultado completo")
@@ -414,8 +414,40 @@ class CompilerIDE(QMainWindow):
         QMessageBox.information(self, "Compilación", "Proceso terminado")
 
     def lexicoCode(self):
-        self.tab_lexico.setText("Resultado análisis léxico")
-        self.error_lexico.setText("Errores de análisis léxico")
+        code = self.currentEditor().toPlainText()
+        scanner = Scanner(code)
+
+        tokens_output = []
+        errors_output = []
+
+        while True:
+            result = scanner.getToken()
+
+            if len(result) == 5:
+                token, lex, line, col, errorMsg = result
+            else:
+                token, lex = result
+                line = scanner.line
+                col = scanner.col
+                errorMsg=scanner.erroMsg
+
+            if token == "ERROR":
+                errors_output.append(f"Error -> {lex} en línea {line}, columna {col}, {errorMsg}")
+            else:
+                tokens_output.append(f"{token} -> {lex}")
+
+            if token == "EOF":
+                break
+
+        with open("tokens.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join(tokens_output))
+
+        with open("errores.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join(errors_output))
+
+        self.tab_lexico.setText("\n".join(tokens_output))
+        self.error_lexico.setText("\n".join(errors_output))
+
 
     def SintacticCode(self):
         self.tab_sintactico.setText("Resultado análisis sintáctico")

@@ -10,6 +10,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QAction, QPainter, QTextFormat
 from PyQt6.QtCore import Qt, QRect, QSize
 from PyQt6.QtWidgets import QPlainTextEdit
+from coloreadorSintactico import ColoreadorSintactico
+from coloreadorSintacticoGlobal import ColoreadorGlobal
 
 
 class LineNumberArea(QWidget):
@@ -27,6 +29,8 @@ class LineNumberArea(QWidget):
 class CodeEditor(QPlainTextEdit):
     def __init__(self):
         super().__init__()
+        #self.colorador=ColoreadorSintactico(self.document())
+        self.coloreador=ColoreadorGlobal(self.document())
 
         self.lineNumberArea = LineNumberArea(self)
 

@@ -1,0 +1,6 @@
+STRING -> Hola
+putos
+CHAR -> a
+STRING -> a
+'ad'
+EOF -> 
