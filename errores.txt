@@ -1,0 +1,3 @@
+Error -> @ en línea 1, columna 10, Caracter invalido
+Error -> 32. en línea 1, columna 28, No se puede delarar un numero con caracteres
+Error -> . en línea 2, columna 7, Caracter invalido
