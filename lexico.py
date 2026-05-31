@@ -160,26 +160,48 @@ class Scanner:
 
     # STRINGS
     def string(self):
-        result = ""
-        self.avanzar()  # saltar "
+        result = '"'
+        self.avanzar()
 
-        while self.current_char and self.current_char != '"':
+        while self.current_char is not None and self.current_char != '"':
             result += self.current_char
             self.avanzar()
 
-        self.avanzar()  # cerrar "
-        return (TokenType.STRING, result)
+        if self.current_char is None:
+            return ("ERROR", result, self.line, self.col, "String sin cerrar")
+
+        result += '"'
+        self.avanzar()
+
+        return ("STRING", result, self.line, self.col, "")
 
     # CHAR
     def char(self):
-        self.avanzar()  # '
-        result = self.current_char
+        result = "'"
+        self.avanzar()  # saltar '
+
+        
+        if self.current_char is None:
+            return ("ERROR", result, self.line, self.col, "Char sin cerrar")
+
+        
+        if self.current_char == "'":
+            result += "'"
+            self.avanzar()
+            return ("CHAR", result, self.line, self.col, "")
+
+        result += self.current_char
         self.avanzar()
-        if self.current_char== "'":
-            self.avanzar()  # cerrar '
-            return (TokenType.CHAR, result)
+
+        if self.current_char is None:
+            return ("ERROR", result, self.line, self.col, "Char sin cerrar")
+
+        if self.current_char == "'":
+            result += "'"
+            self.avanzar()
+            return ("CHAR", result, self.line, self.col, "")
         else:
-             return (TokenType.ERROR, result,self.line, self.col)
+            return ("ERROR", result, self.line, self.col, "Char inválido (más de un carácter)")
 
 
     
