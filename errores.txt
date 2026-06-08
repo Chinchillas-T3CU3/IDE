@@ -1,2 +1,0 @@
-Error -> 'a en línea 4, columna 3, Char inválido (más de un carácter)
-Error -> ' en línea 4, columna 6, Char sin cerrar

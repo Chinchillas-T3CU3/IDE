@@ -4,17 +4,24 @@ class TokenType:
     # Palabras reservadas
     IF="IF"; ELSE="ELSE"; END="END"; DO="DO"; WHILE="WHILE"
     SWITCH="SWITCH"; CASE="CASE"; INT="INT"; FLOAT="FLOAT"
-    MAIN="MAIN"; CIN="CIN"; COUT="COUT"
+    MAIN="MAIN"; CIN="CIN"; COUT="COUT"; THEN="THEN"
+    # CORRECCIÓN 1: agregar BOOL, TRUE, FALSE como palabras reservadas
+    BOOL="BOOL"; TRUE="TRUE"; FALSE="FALSE"
 
     # Identificadores y números
     ID="ID"; NUM_INT="NUM_INT"; NUM_FLOAT="NUM_FLOAT"
 
-    # Operadores
+    # Operadores aritméticos
     MAS="MAS"; MENOS="MENOS"; MUL="MUL"; DIV="DIV"; MOD="MOD"; POT="POT"
     INC="INC"; DEC="DEC"
 
+    # Operadores relacionales
     LT="LT"; LE="LE"; GT="GT"; GE="GE"; NE="NE"; EQ="EQ"
 
+    # CORRECCIÓN 2: agregar SHL (<<) y SHR (>>) como tipos de token
+    SHL="SHL"; SHR="SHR"
+
+    # Operadores lógicos
     AND="AND"; OR="OR"; NOT="NOT"
 
     ASSIGN="ASSIGN"
@@ -28,19 +35,24 @@ class TokenType:
     ENDFILE="EOF"
     ERROR="ERROR"
 
+
 palabrasReservadas = {
-    "if": TokenType.IF,
-    "else": TokenType.ELSE,
-    "end": TokenType.END,
-    "do": TokenType.DO,
-    "while": TokenType.WHILE,
+    "if":     TokenType.IF,
+    "else":   TokenType.ELSE,
+    "end":    TokenType.END,
+    "do":     TokenType.DO,
+    "while":  TokenType.WHILE,
     "switch": TokenType.SWITCH,
-    "case": TokenType.CASE,
-    "int": TokenType.INT,
-    "float": TokenType.FLOAT,
-    "main": TokenType.MAIN,
-    "cin": TokenType.CIN,
-    "cout": TokenType.COUT
+    "case":   TokenType.CASE,
+    "int":    TokenType.INT,
+    "float":  TokenType.FLOAT,
+    "bool":   TokenType.BOOL,    
+    "true":   TokenType.TRUE,    
+    "false":  TokenType.FALSE,   
+    "main":   TokenType.MAIN,
+    "cin":    TokenType.CIN,
+    "cout":   TokenType.COUT,
+    "then":   TokenType.THEN,
 }
 
 class Scanner:
@@ -50,7 +62,7 @@ class Scanner:
         self.pos = 0
         self.line = 1
         self.col = 1
-        self.erroMsg=""
+        self.erroMsg = ""
         self.current_char = self.source[self.pos] if self.source else None
 
     def avanzar(self):
@@ -66,7 +78,6 @@ class Scanner:
         else:
             self.current_char = self.source[self.pos]
 
-
     def avanzarNoConsumir(self):
         nxt = self.pos + 1
         if nxt < len(self.source):
@@ -74,37 +85,28 @@ class Scanner:
         return None
 
     def saltarEspacio(self):
-        while self.current_char and self.current_char in [' ','\t','\n','\r']:
-            print(ord(self.current_char))
+        # CORRECCIÓN 3: eliminado el print(ord(...)) de depuración
+        while self.current_char and self.current_char in [' ', '\t', '\n', '\r']:
             self.avanzar()
 
-    
     def peek_no_whitespace(self):
         pos = self.pos + 1
-
         while pos < len(self.source) and self.source[pos] in [' ', '\t', '\n', '\r']:
             pos += 1
-
         if pos < len(self.source):
             return self.source[pos]
-
         return None
-    
 
     def avanzarSaltandoEspacios(self):
         self.avanzar()
         while self.current_char and self.current_char in [' ', '\t', '\n', '\r']:
             self.avanzar()
-            
 
     # COMENTARIOS
     def saltarComentario(self):
-        # // comentario de línea
         if self.current_char == "/" and self.avanzarNoConsumir() == "/":
             while self.current_char and self.current_char != "\n":
                 self.avanzar()
-
-        # /* comentario multilínea */
         elif self.current_char == "/" and self.avanzarNoConsumir() == "*":
             self.avanzar()
             self.avanzar()
@@ -115,51 +117,52 @@ class Scanner:
                     break
                 self.avanzar()
 
+    # NÚMEROS
+    def get_position(self):
+        return (self.line, self.col)
 
-    # NÚMEROS (INT y FLOAT)
     def number(self):
+        start_line = self.line
+        start_col = self.col
         num = ""
+
         while self.current_char and self.current_char.isdigit():
-            num+=self.current_char
+            num += self.current_char
             self.avanzar()
 
-        if self.current_char==".":
+        if self.current_char == ".":
             if self.avanzarNoConsumir() and self.avanzarNoConsumir().isdigit():
-                num+="."
+                num += "."
                 self.avanzar()
-
                 while self.current_char and self.current_char.isdigit():
-                    num+=self.current_char
+                    num += self.current_char
                     self.avanzar()
-                
-                return (TokenType.NUM_FLOAT,num)
-            
+                return (TokenType.NUM_FLOAT, num, start_line, start_col, "")
             else:
-                num+="."
-                self.erroMsg="No se puede delarar un numero con caracteres"
+                num += "."
+                self.erroMsg = "No se puede declarar un numero con caracteres"
                 self.avanzar()
-                return (TokenType.ERROR,num,self.line, self.col,self.erroMsg)
-            
-        return(TokenType.NUM_INT,num)
+                return (TokenType.ERROR, num, start_line, start_col, self.erroMsg)
 
+        return (TokenType.NUM_INT, num, start_line, start_col, "")
 
-
-
-
-
-    # IDENTIFICADORES
+    # IDENTIFICADORES Y PALABRAS RESERVADAS
     def identifier(self):
+        start_line = self.line
+        start_col = self.col
         result = ""
 
-        while self.current_char and (self.current_char.isalnum()) or self.current_char=="_":
+        while self.current_char and (self.current_char.isalnum() or self.current_char == "_"):
             result += self.current_char
             self.avanzar()
 
-        return (palabrasReservadas.get(result, TokenType.ID), result)
+        token_type = palabrasReservadas.get(result, TokenType.ID)
+        return (token_type, result, start_line, start_col, "")
 
-
-    # STRINGS
+    # CADENAS
     def string(self):
+        start_line = self.line
+        start_col = self.col
         result = '"'
         self.avanzar()
 
@@ -168,49 +171,46 @@ class Scanner:
             self.avanzar()
 
         if self.current_char is None:
-            return ("ERROR", result, self.line, self.col, "String sin cerrar")
+            return ("ERROR", result, start_line, start_col, "String sin cerrar")
 
         result += '"'
         self.avanzar()
+        return ("STRING", result, start_line, start_col, "")
 
-        return ("STRING", result, self.line, self.col, "")
-
-    # CHAR
+    # CARACTERES
     def char(self):
+        start_line = self.line
+        start_col = self.col
         result = "'"
-        self.avanzar()  # saltar '
+        self.avanzar()
 
-        
         if self.current_char is None:
-            return ("ERROR", result, self.line, self.col, "Char sin cerrar")
+            return ("ERROR", result, start_line, start_col, "Char sin cerrar")
 
-        
         if self.current_char == "'":
             result += "'"
             self.avanzar()
-            return ("CHAR", result, self.line, self.col, "")
+            return ("CHAR", result, start_line, start_col, "")
 
         result += self.current_char
         self.avanzar()
 
         if self.current_char is None:
-            return ("ERROR", result, self.line, self.col, "Char sin cerrar")
+            return ("ERROR", result, start_line, start_col, "Char sin cerrar")
 
         if self.current_char == "'":
             result += "'"
             self.avanzar()
-            return ("CHAR", result, self.line, self.col, "")
+            return ("CHAR", result, start_line, start_col, "")
         else:
-            return ("ERROR", result, self.line, self.col, "Char inválido (más de un carácter)")
+            return ("ERROR", result, start_line, start_col, "Char inválido (más de un carácter)")
 
-
-    
-    # TOKEN 
     def getToken(self):
-
         while self.current_char:
+            start_line = self.line
+            start_col = self.col
+
             self.saltarEspacio()
-            #self.saltarComentario()
 
             if self.current_char is None:
                 break
@@ -225,8 +225,8 @@ class Scanner:
             if self.current_char.isdigit():
                 return self.number()
 
-            # Identificadores
-            if self.current_char.isalpha() or self.current_char=="_":
+            # Identificadores y palabras reservadas (incluye bool/true/false)
+            if self.current_char.isalpha() or self.current_char == "_":
                 return self.identifier()
 
             # Strings
@@ -236,95 +236,62 @@ class Scanner:
             # Char
             if self.current_char == "'":
                 return self.char()
-            
 
-            """#Operadores dobles sin espacio
+            # ── Operadores dobles (sin espacio entre caracteres) ──────────
+            # CORRECCIÓN 2a: >> → SHR  (debe ir ANTES que el simple >)
+            if self.current_char == ">" and self.avanzarNoConsumir() == ">":
+                self.avanzar()
+                self.avanzar()
+                return (TokenType.SHR, ">>", start_line, start_col, "")
 
-            if self.current_char == "+" and self.avanzarNoConsumir() == "+":
+            # CORRECCIÓN 2b: << → SHL  (debe ir ANTES que el simple <)
+            if self.current_char == "<" and self.avanzarNoConsumir() == "<":
                 self.avanzar()
                 self.avanzar()
-                return (TokenType.INC, "++")
+                return (TokenType.SHL, "<<", start_line, start_col, "")
 
-            if self.current_char == "-" and self.avanzarNoConsumir() == "-":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.DEC, "--")
-
-            if self.current_char == "=" and self.avanzarNoConsumir() == "=":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.EQ, "==")
-
-            if self.current_char == "!" and self.avanzarNoConsumir() == "=":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.NE, "!=")
-
-            if self.current_char == "<" and self.avanzarNoConsumir() == "=":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.LE, "<=")
-
-            if self.current_char == ">" and self.avanzarNoConsumir() == "=":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.GE, ">=")
-
-            if self.current_char == "&" and self.avanzarNoConsumir() == "&":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.AND, "&&")
-
-            if self.current_char == "|" and self.avanzarNoConsumir() == "|":
-                self.avanzar()
-                self.avanzar()
-                return (TokenType.OR, "||")
-
-
-            """    
-
-            # Operadores dobles(con espacio)
+            # ── Operadores dobles (pueden tener espacio entre caracteres) ──
             if self.current_char == "+" and self.peek_no_whitespace() == "+":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.INC, "++")
+                return (TokenType.INC, "++", start_line, start_col, "")
 
             if self.current_char == "-" and self.peek_no_whitespace() == "-":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.DEC, "--")
+                return (TokenType.DEC, "--", start_line, start_col, "")
 
             if self.current_char == "=" and self.peek_no_whitespace() == "=":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.EQ, "==")
+                return (TokenType.EQ, "==", start_line, start_col, "")
 
             if self.current_char == "!" and self.peek_no_whitespace() == "=":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.NE, "!=")
+                return (TokenType.NE, "!=", start_line, start_col, "")
 
             if self.current_char == "<" and self.peek_no_whitespace() == "=":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.LE, "<=")
+                return (TokenType.LE, "<=", start_line, start_col, "")
 
             if self.current_char == ">" and self.peek_no_whitespace() == "=":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.GE, ">=")
+                return (TokenType.GE, ">=", start_line, start_col, "")
 
             if self.current_char == "&" and self.peek_no_whitespace() == "&":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.AND, "&&")
+                return (TokenType.AND, "&&", start_line, start_col, "")
 
             if self.current_char == "|" and self.peek_no_whitespace() == "|":
                 self.avanzarSaltandoEspacios()
                 self.avanzar()
-                return (TokenType.OR, "||")
-            
-            # Operadores simples
+                return (TokenType.OR, "||", start_line, start_col, "")
+
+            # ── Operadores y símbolos simples ─────────────────────────────
             char = self.current_char
             self.avanzar()
 
@@ -344,10 +311,13 @@ class Scanner:
                 "{": TokenType.LBRACE,
                 "}": TokenType.RBRACE,
                 ",": TokenType.COMA,
-                ";": TokenType.PUNCOM
+                ";": TokenType.PUNCOM,
             }
-            
 
-            return (simple_tokens.get(char, TokenType.ERROR), char,self.line, self.col,"Caracter invalido")
+            token_type = simple_tokens.get(char, TokenType.ERROR)
+            if token_type == TokenType.ERROR:
+                return (token_type, char, start_line, start_col, "Caracter invalido")
 
-        return (TokenType.ENDFILE, "")
+            return (token_type, char, start_line, start_col, "")
+
+        return (TokenType.ENDFILE, "", self.line, self.col, "")

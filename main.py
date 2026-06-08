@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QTextEdit,
     QVBoxLayout, QHBoxLayout, QTabWidget,
     QFileDialog, QMessageBox, QMenuBar, QMenu,QLabel,
-    QWidgetAction
+    QWidgetAction,QTreeWidgetItem, QTreeWidget
 )
 from PyQt6.QtGui import QAction, QPainter, QTextFormat
 from PyQt6.QtCore import Qt, QRect, QSize
@@ -29,7 +29,117 @@ guardarComo_icon = os.path.join(base_path, "icons/guardarComo.png")
 salir_icon = os.path.join(base_path, "icons/salir.png")
 
 
-
+def _build_tree_html(tree_json: str) -> str:
+    """
+        Genera una página HTML completa con el árbol colapsable.
+        tree_json es el string JSON producido por TreePrinter.toJson().
+        """
+    return f"""<!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <style>
+    body{{font-family:system-ui,sans-serif;font-size:13px;margin:0;padding:8px;
+            background:#fff;color:#1a1a1a}}
+    .node-wrap{{margin:0;padding:0}}
+    .node-row{{display:flex;align-items:center;gap:6px;padding:3px 6px;
+                border-radius:6px;cursor:pointer;user-select:none;min-height:28px}}
+    .node-row:hover{{background:#f3f3f3}}
+    .toggle-btn{{width:14px;height:14px;display:flex;align-items:center;
+                justify-content:center;flex-shrink:0;color:#888;font-size:10px;
+                transition:transform 0.15s}}
+    .toggle-btn.open{{transform:rotate(90deg)}}
+    .toggle-btn.leaf{{opacity:0}}
+    .node-icon{{width:20px;height:20px;border-radius:4px;display:flex;
+                align-items:center;justify-content:center;flex-shrink:0;
+                font-size:10px;font-weight:600}}
+    .node-label{{font-size:13px;color:#1a1a1a}}
+    .children{{padding-left:20px;border-left:1.5px solid #e0e0e0;margin-left:13px}}
+    .role-tag{{font-size:10px;color:#999;padding:2px 0 0 4px;font-family:monospace}}
+    
+    .kind-program .node-icon{{background:#EEEDFE;color:#3C3489}}
+    .kind-decl .node-icon{{background:#E6F1FB;color:#0C447C}}
+    .kind-stmt .node-icon{{background:#E1F5EE;color:#085041}}
+    .kind-op .node-icon{{background:#FAEEDA;color:#854F0B}}
+    .kind-type .node-icon{{background:#FAECE7;color:#712B13}}
+    .kind-id .node-icon{{background:#F1EFE8;color:#444441}}
+    .kind-const .node-icon{{background:#EAF3DE;color:#27500A}}
+    .kind-logic .node-icon{{background:#FBEAF0;color:#72243E}}
+    .kind-str .node-icon{{background:#FCEBEB;color:#791F1F}}
+    .kind-bool .node-icon{{background:#E1F5EE;color:#0F6E56}}
+    </style>
+    </head>
+    <body>
+    <div id="root"></div>
+    <script>
+    const TREE = {tree_json};
+    
+    function buildNode(node){{
+    if(!node) return null;
+    const info = node.display || {{}};
+    const wrap = document.createElement('div');
+    wrap.className = 'node-wrap';
+    
+    const row = document.createElement('div');
+    row.className = 'node-row ' + (info.cls||'');
+    
+    const kids = (node.children||[]).filter(Boolean);
+    const hasSibling = !!node.sibling;
+    
+    const toggle = document.createElement('span');
+    toggle.className = 'toggle-btn' + (kids.length ? ' open' : ' leaf');
+    toggle.innerHTML = '&#9654;';
+    
+    const icon = document.createElement('span');
+    icon.className = 'node-icon';
+    icon.textContent = info.icon || '?';
+    
+    const lbl = document.createElement('span');
+    lbl.className = 'node-label';
+    lbl.textContent = info.label || node.nodekind;
+    
+    row.appendChild(toggle);
+    row.appendChild(icon);
+    row.appendChild(lbl);
+    wrap.appendChild(row);
+    
+    if(kids.length){{
+        const cw = document.createElement('div');
+        cw.className = 'children';
+        const roles = ['child[0]','child[1]','child[2]'];
+        kids.forEach((child, i)=>{{
+        const rl = document.createElement('div');
+        rl.className='role-tag';
+        rl.textContent = roles[i]||'child';
+        cw.appendChild(rl);
+        cw.appendChild(buildNode(child));
+        // hermanos del hijo
+        let sib = child.sibling;
+        while(sib){{
+            const sl = document.createElement('div');
+            sl.className='role-tag';
+            sl.textContent='sibling';
+            cw.appendChild(sl);
+            cw.appendChild(buildNode(sib));
+            sib = sib.sibling;
+        }}
+        }});
+        wrap.appendChild(cw);
+        row.addEventListener('click', ()=>{{
+        const open = cw.style.display !== 'none';
+        cw.style.display = open ? 'none' : '';
+        toggle.classList.toggle('open', !open);
+        }});
+    }}
+    return wrap;
+    }}
+    
+    const root = document.getElementById('root');
+    if(TREE){{ root.appendChild(buildNode(TREE)); }}
+    else{{ root.textContent = 'Árbol vacío'; }}
+    </script>
+    </body>
+    </html>"""
 # ===============================
 # Ventana principal
 # ===============================
@@ -63,7 +173,9 @@ class CompilerIDE(QMainWindow):
         # ===== Tabs de resultados =====
         self.tabs = QTabWidget()
         self.tab_lexico = QTextEdit()
-        self.tab_sintactico = QTextEdit()
+        self.tab_sintactico = QTreeWidget()  # Cambiar a QTreeWidget
+        self.tab_sintactico.setHeaderLabel("Árbol Sintáctico")  # Título
+        self.tab_sintactico.setIndentation(20)  # Indentación
         self.tab_semantico = QTextEdit()
         self.tab_tabla = QTextEdit()
         self.tab_codigo = QTextEdit()
@@ -400,14 +512,15 @@ class CompilerIDE(QMainWindow):
         self.error_semantico.clear()
         self.result_compilado.clear()
 
-        self.lexicoCode()
+        #self.lexicoCode()
+        self.SintacticCode()
 
         # Simulación
-        self.tab_sintactico.setText("Resultado análisis sintáctico")
+        #self.tab_sintactico.setText("Resultado análisis sintáctico")
         self.tab_semantico.setText("Resultado análisis semántico")
         self.tab_tabla.setText("Tabla de símbolos")
         self.tab_codigo.setText("Código intermedio generado")
-        self.error_sintactico.setText("Errores de análisis sintáctico")
+        #self.error_sintactico.setText("Errores de análisis sintáctico")
         self.error_semantico.setText("Errores de análisis semántico")
         self.result_compilado.setText("Resultado completo")
 
@@ -429,15 +542,16 @@ class CompilerIDE(QMainWindow):
                 token, lex = result
                 line = scanner.line
                 col = scanner.col
-                errorMsg=scanner.erroMsg
+                errorMsg = scanner.erroMsg
 
             if token == "ERROR":
-                errors_output.append(f"Error -> {lex} en línea {line}, columna {col}, {errorMsg}")
-            else:
-                tokens_output.append(f"{token} -> {lex}")
-
-            if token == "EOF":
+                errors_output.append(f"Error -> {lex} en línea {line}, columna {col} - {errorMsg}")
+            elif token == "EOF":
+                tokens_output.append(f"EOF -> Fin del archivo (línea {line}, columna {col})")
                 break
+            else:
+                # Mostrar token con línea y columna
+                tokens_output.append(f"{token:<15}  {lex} | Línea: {line:<3} | Columna: {col:<3}")
 
         with open("tokens.txt", "w", encoding="utf-8") as f:
             f.write("\n".join(tokens_output))
@@ -450,8 +564,230 @@ class CompilerIDE(QMainWindow):
 
 
     def SintacticCode(self):
-        self.tab_sintactico.setText("Resultado análisis sintáctico")
-        self.error_sintactico.setText("Errores de análisis sintáctico")
+        """Realiza primero el análisis léxico y luego el sintáctico"""
+        
+        # Limpiar resultados anteriores
+        self.tab_sintactico.clear()
+        self.error_sintactico.clear()
+        
+        code = self.currentEditor().toPlainText()
+        if not code.strip():
+            self.tab_sintactico.setHeaderLabel("No hay código para analizar")
+            self.error_sintactico.setText("El editor está vacío")
+            return
+        
+        print("=" * 50)
+        print("FASE 1: Análisis Léxico")
+        print("=" * 50)
+        
+        self.lexicoCode()
+        
+        if not os.path.exists("tokens.txt"):
+            self.tab_sintactico.setHeaderLabel("Error: No se pudo generar tokens.txt")
+            self.error_sintactico.setText("El análisis léxico falló")
+            return
+        
+        errores_lexicos = False
+        if os.path.exists("errores.txt"):
+            with open("errores.txt", "r", encoding="utf-8") as f:
+                errores = f.read().strip()
+                if errores:
+                    errores_lexicos = True
+        
+        if errores_lexicos:
+            with open("errores.txt", "r", encoding="utf-8") as f:
+                errores = f.read()
+                self.tab_sintactico.setHeaderLabel(" Errores Léxicos")
+                self.error_sintactico.setText(f" Errores léxicos encontrados:\n\n{errores}")
+                return
+        
+        print("\n" + "=" * 50)
+        print("FASE 2: Análisis Sintáctico")
+        print("=" * 50)
+        
+        try:
+            from parse import Parser
+            from arbol import TreePrinter
+            
+            parser = Parser("tokens.txt")
+            syntax_tree = parser.parse()
+            
+            # Construir el árbol en QTreeWidget
+            if syntax_tree is not None:
+                self.buildTreeWidget(syntax_tree)
+            else:
+                self.tab_sintactico.setHeaderLabel("No se pudo generar el árbol sintáctico")
+            
+            # Leer errores sintácticos
+            if os.path.exists("erroresSin.txt"):
+                with open("erroresSin.txt", "r", encoding="utf-8") as f:
+                    errores_sintacticos = f.read()
+                
+                if errores_sintacticos.strip() and "No se encontraron errores" not in errores_sintacticos:
+                    self.error_sintactico.setText(f" {errores_sintacticos}")
+                    print("SINTAXIS: Se encontraron errores")
+                else:
+                    self.error_sintactico.setText("Análisis sintáctico completado sin errores")
+                    print("SINTAXIS: Completado sin errores")
+                    self.error_sintactico.clear()
+            else:
+                self.error_sintactico.setText(" Análisis sintáctico completado sin errores")
+                self.error_sintactico.clear()
+                    
+        except Exception as e:
+            self.tab_sintactico.setHeaderLabel(f"Error: {str(e)}")
+            self.error_sintactico.setText(str(e))
+            import traceback
+            traceback.print_exc()
+
+    def getNodeText(self, node):
+        """Obtiene el texto a mostrar para un nodo con formato específico"""
+        
+        if node.nodekind == "ProgramK":
+            return "Programa"
+        
+        elif node.nodekind == "StmtK":
+            kind = node.kind.get('stmt')
+            
+            if kind == "SelectionK":  # If
+                return "Seleccion"
+            
+            elif kind == "IterationK":  # While
+                return "Iteracion"
+            
+            elif kind == "RepetitionK":  # Do-While / Repeat
+                return "Repeticion"
+            
+            elif kind == "AssignK":  # Asignación
+                name = node.attr.get('name', '?')
+                return f"Asignación a: {name}"
+            
+            elif kind == "SentInK":  # cin >> id
+                name = node.attr.get('name', '?')
+                return f"Leer: {name}"
+            
+            elif kind == "SentOutK":  # cout <<
+                return "Escribir"
+            
+            else:
+                return str(kind)
+        
+        elif node.nodekind == "ExpK":
+            kind = node.kind.get('exp')
+            
+            if kind == "OpK":  # Operador
+                op = node.attr.get('op', '?')
+                # Convertir código de operador a símbolo legible
+                op_str = self._getOperatorSymbol(op)
+                return f"Operador: {op_str}"
+            
+            elif kind == "ConstK":  # Constante numérica
+                val = node.attr.get('val', '?')
+                return f"Constante: {val}"
+            
+            elif kind == "BoolK":  # Booleano
+                val = node.attr.get('val', '?')
+                return f"Booleano: {val}"
+            
+            elif kind == "IdK":  # Identificador
+                name = node.attr.get('name', '?')
+                if isinstance(name, list):
+                    name = ', '.join(name)
+                return f"Id: {name}"
+            
+            elif kind == "StringK":  # Cadena
+                val = node.attr.get('val', '?')
+                return f"String: {val}"
+            
+            elif kind == "LogicK":  # Operador lógico
+                op = node.attr.get('op', '?')
+                op_str = self._getOperatorSymbol(op)
+                return f"Operador Logico: {op_str}"
+            
+            else:
+                return f"Expresion: {kind}"
+        
+        elif node.nodekind == "DeclK":
+            kind = node.kind.get('decl')
+            
+            if kind == "VarDeclK":
+                return "Declaracion de Variable"
+            
+            elif kind == "TypeK":
+                type_val = node.attr.get('type', '?')
+                # Convertir ExpType a string legible
+                if hasattr(type_val, 'value'):
+                    type_val = type_val.value
+                return f"Tipo: {type_val}"
+            
+            else:
+                return f"Declaracion: {kind}"
+        
+        else:
+            return f"Desconocido: {node.nodekind}"
+
+    def _getOperatorSymbol(self, op_token):
+        """Convierte el token de operador a su símbolo legible"""
+        op_map = {
+            "MAS": "+", "MENOS": "-", "MUL": "*", "DIV": "/",
+            "MOD": "%", "POT": "^", "LT": "<", "LE": "<=",
+            "GT": ">", "GE": ">=", "EQ": "==", "NE": "!=",
+            "ASSIGN": "=", "INC": "++", "DEC": "--",
+            "AND": "&&", "OR": "||", "NOT": "!",
+            "SHL": "<<", "SHR": ">>"
+        }
+        return op_map.get(op_token, str(op_token))
+
+    def buildTreeWidget(self, tree):
+        """Construye el QTreeWidget a partir del TreeNode"""
+        self.tab_sintactico.clear()
+        self.tab_sintactico.setHeaderLabel("Árbol Sintáctico (Click para expandir/colapsar)")
+        self.tab_sintactico.setIndentation(20)  # Indentación para mejor visualización
+        
+        # Crear el nodo raíz
+        root_item = QTreeWidgetItem(self.tab_sintactico)
+        self.addNodeToTree(tree, root_item)
+        #root_item.setExpanded(True)
+        self.tab_sintactico.expandAll();
+        
+        # Ajustar el ancho de la columna
+        self.tab_sintactico.resizeColumnToContents(0)
+
+    def addNodeToTree(self, node, parent_item):
+        """Añade un nodo y sus hijos al QTreeWidget"""
+        if node is None:
+            return
+    
+        # Determinar el texto del nodo
+        node_text = self.getNodeText(node)
+        
+        # Crear el item
+        item = QTreeWidgetItem(parent_item)
+        item.setText(0, node_text)
+        
+        # Añadir color según tipo (opcional, para mejor visualización)
+        if node.nodekind == "ProgramK":
+            item.setForeground(0, Qt.GlobalColor.white)
+            # Usar fuente negrita para el programa principal
+            font = item.font(0)
+            font.setBold(True)
+            item.setFont(0, font)
+        elif node.nodekind == "StmtK":
+            item.setForeground(0, Qt.GlobalColor.white)
+        elif node.nodekind == "ExpK":
+            item.setForeground(0, Qt.GlobalColor.white)
+        elif node.nodekind == "DeclK":
+            item.setForeground(0, Qt.GlobalColor.white)
+        
+        # Procesar hijos (children)
+        for child in node.children:
+            if child is not None:
+                self.addNodeToTree(child, item)
+        
+        # Procesar hermanos (siblings) - esto crea nodos al mismo nivel
+        if node.sibling is not None:
+            self.addNodeToTree(node.sibling, parent_item)
+
     def semanticCode(self):
         self.tab_semantico.setText("Resultado análisis semántico")
         self.error_semantico.setText("Errores de análisis semántico")
@@ -478,3 +814,4 @@ if __name__ == "__main__":
     window = CompilerIDE()
     window.show()
     sys.exit(app.exec())
+

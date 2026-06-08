@@ -1,0 +1,43 @@
+main {
+
+    int x, y;
+    float resultado;
+    bool activo;
+
+    cin >> x;
+    cin >> y;
+
+    // ERROR 1: falta el ; al final de la declaracion
+    // SOLUCION: agregar ; al final -> int z;
+    int z        // int z;
+
+    // ERROR 2: se usa = en vez de == para comparar
+    // SOLUCION: cambiar = por == -> if x == y then
+    if x = y then
+        cout << "son iguales";
+    end
+
+    // ERROR 3: falta el 'then' despues de la expresion del if
+    // SOLUCION: agregar then -> if x > 0 then
+    if x > 0
+        cout << "x es positivo";
+    end
+
+    // ERROR 4: falta el 'end' para cerrar el while
+    // SOLUCION: agregar end al final del bloque -> end
+    while activo
+        x = x + 1;
+        if x == 10 then
+            activo = false;
+        end
+
+    // ERROR 5: falta ; al final del do-while
+    // SOLUCION: agregar ; despues de la expresion -> while y > 0;
+    do
+        y = y - 1;
+    while y > 0
+
+    resultado = x * y;
+    cout << resultado;
+
+}

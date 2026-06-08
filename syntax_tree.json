@@ -1,0 +1,1046 @@
+{
+  "nodekind": "ProgramK",
+  "kind": {},
+  "attr": {},
+  "type": "Void",
+  "lineno": 1,
+  "children": [
+    {
+      "nodekind": "DeclK",
+      "kind": {
+        "decl": "VarDeclK"
+      },
+      "attr": {},
+      "type": "Void",
+      "lineno": 2,
+      "children": [
+        {
+          "nodekind": "DeclK",
+          "kind": {
+            "decl": "TypeK"
+          },
+          "attr": {
+            "type": "Integer"
+          },
+          "type": "Void",
+          "lineno": 2,
+          "children": [
+            null,
+            null,
+            null
+          ],
+          "sibling": null,
+          "display": {
+            "icon": "T",
+            "label": "Tipo: Integer",
+            "cls": "kind-type"
+          }
+        },
+        {
+          "nodekind": "ExpK",
+          "kind": {
+            "exp": "IdK"
+          },
+          "attr": {
+            "name": "x"
+          },
+          "type": "Void",
+          "lineno": 2,
+          "children": [
+            null,
+            null,
+            null
+          ],
+          "sibling": {
+            "nodekind": "ExpK",
+            "kind": {
+              "exp": "IdK"
+            },
+            "attr": {
+              "name": "y"
+            },
+            "type": "Void",
+            "lineno": 2,
+            "children": [
+              null,
+              null,
+              null
+            ],
+            "sibling": null,
+            "display": {
+              "icon": "id",
+              "label": "Id: y",
+              "cls": "kind-id"
+            }
+          },
+          "display": {
+            "icon": "id",
+            "label": "Id: x",
+            "cls": "kind-id"
+          }
+        },
+        null
+      ],
+      "sibling": {
+        "nodekind": "DeclK",
+        "kind": {
+          "decl": "VarDeclK"
+        },
+        "attr": {},
+        "type": "Void",
+        "lineno": 3,
+        "children": [
+          {
+            "nodekind": "DeclK",
+            "kind": {
+              "decl": "TypeK"
+            },
+            "attr": {
+              "type": "Float"
+            },
+            "type": "Void",
+            "lineno": 3,
+            "children": [
+              null,
+              null,
+              null
+            ],
+            "sibling": null,
+            "display": {
+              "icon": "T",
+              "label": "Tipo: Float",
+              "cls": "kind-type"
+            }
+          },
+          {
+            "nodekind": "ExpK",
+            "kind": {
+              "exp": "IdK"
+            },
+            "attr": {
+              "name": "resultado"
+            },
+            "type": "Void",
+            "lineno": 3,
+            "children": [
+              null,
+              null,
+              null
+            ],
+            "sibling": null,
+            "display": {
+              "icon": "id",
+              "label": "Id: resultado",
+              "cls": "kind-id"
+            }
+          },
+          null
+        ],
+        "sibling": {
+          "nodekind": "DeclK",
+          "kind": {
+            "decl": "VarDeclK"
+          },
+          "attr": {},
+          "type": "Void",
+          "lineno": 4,
+          "children": [
+            {
+              "nodekind": "DeclK",
+              "kind": {
+                "decl": "TypeK"
+              },
+              "attr": {
+                "type": "Boolean"
+              },
+              "type": "Void",
+              "lineno": 4,
+              "children": [
+                null,
+                null,
+                null
+              ],
+              "sibling": null,
+              "display": {
+                "icon": "T",
+                "label": "Tipo: Boolean",
+                "cls": "kind-type"
+              }
+            },
+            {
+              "nodekind": "ExpK",
+              "kind": {
+                "exp": "IdK"
+              },
+              "attr": {
+                "name": "activo"
+              },
+              "type": "Void",
+              "lineno": 4,
+              "children": [
+                null,
+                null,
+                null
+              ],
+              "sibling": null,
+              "display": {
+                "icon": "id",
+                "label": "Id: activo",
+                "cls": "kind-id"
+              }
+            },
+            null
+          ],
+          "sibling": {
+            "nodekind": "StmtK",
+            "kind": {
+              "stmt": "SentInK"
+            },
+            "attr": {
+              "name": "x"
+            },
+            "type": "Void",
+            "lineno": 6,
+            "children": [
+              null,
+              null,
+              null
+            ],
+            "sibling": {
+              "nodekind": "StmtK",
+              "kind": {
+                "stmt": "SentInK"
+              },
+              "attr": {
+                "name": "y"
+              },
+              "type": "Void",
+              "lineno": 7,
+              "children": [
+                null,
+                null,
+                null
+              ],
+              "sibling": {
+                "nodekind": "StmtK",
+                "kind": {
+                  "stmt": "AssignK"
+                },
+                "attr": {
+                  "name": "activo"
+                },
+                "type": "Void",
+                "lineno": 9,
+                "children": [
+                  {
+                    "nodekind": "ExpK",
+                    "kind": {
+                      "exp": "BoolK"
+                    },
+                    "attr": {
+                      "val": false
+                    },
+                    "type": "Boolean",
+                    "lineno": 9,
+                    "children": [
+                      null,
+                      null,
+                      null
+                    ],
+                    "sibling": null,
+                    "display": {
+                      "icon": "b",
+                      "label": "Bool: False",
+                      "cls": "kind-bool"
+                    }
+                  },
+                  null,
+                  null
+                ],
+                "sibling": {
+                  "nodekind": "StmtK",
+                  "kind": {
+                    "stmt": "AssignK"
+                  },
+                  "attr": {
+                    "name": "resultado"
+                  },
+                  "type": "Void",
+                  "lineno": 11,
+                  "children": [
+                    {
+                      "nodekind": "ExpK",
+                      "kind": {
+                        "exp": "OpK"
+                      },
+                      "attr": {
+                        "op": "MUL"
+                      },
+                      "type": "Void",
+                      "lineno": 11,
+                      "children": [
+                        {
+                          "nodekind": "ExpK",
+                          "kind": {
+                            "exp": "IdK"
+                          },
+                          "attr": {
+                            "name": "x"
+                          },
+                          "type": "Void",
+                          "lineno": 11,
+                          "children": [
+                            null,
+                            null,
+                            null
+                          ],
+                          "sibling": null,
+                          "display": {
+                            "icon": "id",
+                            "label": "Id: x",
+                            "cls": "kind-id"
+                          }
+                        },
+                        {
+                          "nodekind": "ExpK",
+                          "kind": {
+                            "exp": "IdK"
+                          },
+                          "attr": {
+                            "name": "y"
+                          },
+                          "type": "Void",
+                          "lineno": 11,
+                          "children": [
+                            null,
+                            null,
+                            null
+                          ],
+                          "sibling": null,
+                          "display": {
+                            "icon": "id",
+                            "label": "Id: y",
+                            "cls": "kind-id"
+                          }
+                        },
+                        null
+                      ],
+                      "sibling": null,
+                      "display": {
+                        "icon": "op",
+                        "label": "Op: *",
+                        "cls": "kind-op"
+                      }
+                    },
+                    null,
+                    null
+                  ],
+                  "sibling": {
+                    "nodekind": "StmtK",
+                    "kind": {
+                      "stmt": "SelectionK"
+                    },
+                    "attr": {},
+                    "type": "Void",
+                    "lineno": 13,
+                    "children": [
+                      {
+                        "nodekind": "ExpK",
+                        "kind": {
+                          "exp": "OpK"
+                        },
+                        "attr": {
+                          "op": "GT"
+                        },
+                        "type": "Void",
+                        "lineno": 13,
+                        "children": [
+                          {
+                            "nodekind": "ExpK",
+                            "kind": {
+                              "exp": "IdK"
+                            },
+                            "attr": {
+                              "name": "resultado"
+                            },
+                            "type": "Void",
+                            "lineno": 13,
+                            "children": [
+                              null,
+                              null,
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "id",
+                              "label": "Id: resultado",
+                              "cls": "kind-id"
+                            }
+                          },
+                          {
+                            "nodekind": "ExpK",
+                            "kind": {
+                              "exp": "ConstK"
+                            },
+                            "attr": {
+                              "val": 0
+                            },
+                            "type": "Integer",
+                            "lineno": 13,
+                            "children": [
+                              null,
+                              null,
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "#",
+                              "label": "Constante: 0",
+                              "cls": "kind-const"
+                            }
+                          },
+                          null
+                        ],
+                        "sibling": null,
+                        "display": {
+                          "icon": "op",
+                          "label": "Op: >",
+                          "cls": "kind-op"
+                        }
+                      },
+                      {
+                        "nodekind": "StmtK",
+                        "kind": {
+                          "stmt": "SentOutK"
+                        },
+                        "attr": {},
+                        "type": "Void",
+                        "lineno": 14,
+                        "children": [
+                          {
+                            "nodekind": "ExpK",
+                            "kind": {
+                              "exp": "StringK"
+                            },
+                            "attr": {
+                              "val": "\"El resultado es positivo: \""
+                            },
+                            "type": "String",
+                            "lineno": 14,
+                            "children": [
+                              null,
+                              null,
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "\"",
+                              "label": "Cadena: \"El resultado es positivo: \"",
+                              "cls": "kind-str"
+                            }
+                          },
+                          null,
+                          null
+                        ],
+                        "sibling": {
+                          "nodekind": "StmtK",
+                          "kind": {
+                            "stmt": "SentOutK"
+                          },
+                          "attr": {},
+                          "type": "Void",
+                          "lineno": 15,
+                          "children": [
+                            {
+                              "nodekind": "ExpK",
+                              "kind": {
+                                "exp": "IdK"
+                              },
+                              "attr": {
+                                "name": "resultado"
+                              },
+                              "type": "Void",
+                              "lineno": 15,
+                              "children": [
+                                null,
+                                null,
+                                null
+                              ],
+                              "sibling": null,
+                              "display": {
+                                "icon": "id",
+                                "label": "Id: resultado",
+                                "cls": "kind-id"
+                              }
+                            },
+                            null,
+                            null
+                          ],
+                          "sibling": null,
+                          "display": {
+                            "icon": "out",
+                            "label": "Escribir (cout)",
+                            "cls": "kind-stmt"
+                          }
+                        },
+                        "display": {
+                          "icon": "out",
+                          "label": "Escribir (cout)",
+                          "cls": "kind-stmt"
+                        }
+                      },
+                      {
+                        "nodekind": "StmtK",
+                        "kind": {
+                          "stmt": "SentOutK"
+                        },
+                        "attr": {},
+                        "type": "Void",
+                        "lineno": 17,
+                        "children": [
+                          {
+                            "nodekind": "ExpK",
+                            "kind": {
+                              "exp": "StringK"
+                            },
+                            "attr": {
+                              "val": "\"El resultado no es positivo\""
+                            },
+                            "type": "String",
+                            "lineno": 17,
+                            "children": [
+                              null,
+                              null,
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "\"",
+                              "label": "Cadena: \"El resultado no es positivo\"",
+                              "cls": "kind-str"
+                            }
+                          },
+                          null,
+                          null
+                        ],
+                        "sibling": null,
+                        "display": {
+                          "icon": "out",
+                          "label": "Escribir (cout)",
+                          "cls": "kind-stmt"
+                        }
+                      }
+                    ],
+                    "sibling": {
+                      "nodekind": "StmtK",
+                      "kind": {
+                        "stmt": "IterationK"
+                      },
+                      "attr": {},
+                      "type": "Void",
+                      "lineno": 20,
+                      "children": [
+                        {
+                          "nodekind": "ExpK",
+                          "kind": {
+                            "exp": "IdK"
+                          },
+                          "attr": {
+                            "name": "activo"
+                          },
+                          "type": "Void",
+                          "lineno": 20,
+                          "children": [
+                            null,
+                            null,
+                            null
+                          ],
+                          "sibling": null,
+                          "display": {
+                            "icon": "id",
+                            "label": "Id: activo",
+                            "cls": "kind-id"
+                          }
+                        },
+                        {
+                          "nodekind": "StmtK",
+                          "kind": {
+                            "stmt": "AssignK"
+                          },
+                          "attr": {
+                            "name": "x"
+                          },
+                          "type": "Void",
+                          "lineno": 21,
+                          "children": [
+                            {
+                              "nodekind": "ExpK",
+                              "kind": {
+                                "exp": "OpK"
+                              },
+                              "attr": {
+                                "op": "MAS"
+                              },
+                              "type": "Void",
+                              "lineno": 21,
+                              "children": [
+                                {
+                                  "nodekind": "ExpK",
+                                  "kind": {
+                                    "exp": "IdK"
+                                  },
+                                  "attr": {
+                                    "name": "x"
+                                  },
+                                  "type": "Void",
+                                  "lineno": 21,
+                                  "children": [
+                                    null,
+                                    null,
+                                    null
+                                  ],
+                                  "sibling": null,
+                                  "display": {
+                                    "icon": "id",
+                                    "label": "Id: x",
+                                    "cls": "kind-id"
+                                  }
+                                },
+                                {
+                                  "nodekind": "ExpK",
+                                  "kind": {
+                                    "exp": "ConstK"
+                                  },
+                                  "attr": {
+                                    "val": 1
+                                  },
+                                  "type": "Integer",
+                                  "lineno": 21,
+                                  "children": [
+                                    null,
+                                    null,
+                                    null
+                                  ],
+                                  "sibling": null,
+                                  "display": {
+                                    "icon": "#",
+                                    "label": "Constante: 1",
+                                    "cls": "kind-const"
+                                  }
+                                },
+                                null
+                              ],
+                              "sibling": null,
+                              "display": {
+                                "icon": "op",
+                                "label": "Op: +",
+                                "cls": "kind-op"
+                              }
+                            },
+                            null,
+                            null
+                          ],
+                          "sibling": {
+                            "nodekind": "StmtK",
+                            "kind": {
+                              "stmt": "SelectionK"
+                            },
+                            "attr": {},
+                            "type": "Void",
+                            "lineno": 22,
+                            "children": [
+                              {
+                                "nodekind": "ExpK",
+                                "kind": {
+                                  "exp": "OpK"
+                                },
+                                "attr": {
+                                  "op": "EQ"
+                                },
+                                "type": "Void",
+                                "lineno": 22,
+                                "children": [
+                                  {
+                                    "nodekind": "ExpK",
+                                    "kind": {
+                                      "exp": "IdK"
+                                    },
+                                    "attr": {
+                                      "name": "x"
+                                    },
+                                    "type": "Void",
+                                    "lineno": 22,
+                                    "children": [
+                                      null,
+                                      null,
+                                      null
+                                    ],
+                                    "sibling": null,
+                                    "display": {
+                                      "icon": "id",
+                                      "label": "Id: x",
+                                      "cls": "kind-id"
+                                    }
+                                  },
+                                  {
+                                    "nodekind": "ExpK",
+                                    "kind": {
+                                      "exp": "ConstK"
+                                    },
+                                    "attr": {
+                                      "val": 10
+                                    },
+                                    "type": "Integer",
+                                    "lineno": 22,
+                                    "children": [
+                                      null,
+                                      null,
+                                      null
+                                    ],
+                                    "sibling": null,
+                                    "display": {
+                                      "icon": "#",
+                                      "label": "Constante: 10",
+                                      "cls": "kind-const"
+                                    }
+                                  },
+                                  null
+                                ],
+                                "sibling": null,
+                                "display": {
+                                  "icon": "op",
+                                  "label": "Op: ==",
+                                  "cls": "kind-op"
+                                }
+                              },
+                              {
+                                "nodekind": "StmtK",
+                                "kind": {
+                                  "stmt": "AssignK"
+                                },
+                                "attr": {
+                                  "name": "activo"
+                                },
+                                "type": "Void",
+                                "lineno": 23,
+                                "children": [
+                                  {
+                                    "nodekind": "ExpK",
+                                    "kind": {
+                                      "exp": "BoolK"
+                                    },
+                                    "attr": {
+                                      "val": false
+                                    },
+                                    "type": "Boolean",
+                                    "lineno": 23,
+                                    "children": [
+                                      null,
+                                      null,
+                                      null
+                                    ],
+                                    "sibling": null,
+                                    "display": {
+                                      "icon": "b",
+                                      "label": "Bool: False",
+                                      "cls": "kind-bool"
+                                    }
+                                  },
+                                  null,
+                                  null
+                                ],
+                                "sibling": null,
+                                "display": {
+                                  "icon": "=",
+                                  "label": "Asignar: activo",
+                                  "cls": "kind-stmt"
+                                }
+                              },
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "if",
+                              "label": "If",
+                              "cls": "kind-stmt"
+                            }
+                          },
+                          "display": {
+                            "icon": "=",
+                            "label": "Asignar: x",
+                            "cls": "kind-stmt"
+                          }
+                        },
+                        null
+                      ],
+                      "sibling": {
+                        "nodekind": "StmtK",
+                        "kind": {
+                          "stmt": "RepetitionK"
+                        },
+                        "attr": {},
+                        "type": "Void",
+                        "lineno": 27,
+                        "children": [
+                          {
+                            "nodekind": "StmtK",
+                            "kind": {
+                              "stmt": "AssignK"
+                            },
+                            "attr": {
+                              "name": "y"
+                            },
+                            "type": "Void",
+                            "lineno": 28,
+                            "children": [
+                              {
+                                "nodekind": "ExpK",
+                                "kind": {
+                                  "exp": "OpK"
+                                },
+                                "attr": {
+                                  "op": "MENOS"
+                                },
+                                "type": "Void",
+                                "lineno": 28,
+                                "children": [
+                                  {
+                                    "nodekind": "ExpK",
+                                    "kind": {
+                                      "exp": "IdK"
+                                    },
+                                    "attr": {
+                                      "name": "y"
+                                    },
+                                    "type": "Void",
+                                    "lineno": 28,
+                                    "children": [
+                                      null,
+                                      null,
+                                      null
+                                    ],
+                                    "sibling": null,
+                                    "display": {
+                                      "icon": "id",
+                                      "label": "Id: y",
+                                      "cls": "kind-id"
+                                    }
+                                  },
+                                  {
+                                    "nodekind": "ExpK",
+                                    "kind": {
+                                      "exp": "ConstK"
+                                    },
+                                    "attr": {
+                                      "val": 1
+                                    },
+                                    "type": "Integer",
+                                    "lineno": 28,
+                                    "children": [
+                                      null,
+                                      null,
+                                      null
+                                    ],
+                                    "sibling": null,
+                                    "display": {
+                                      "icon": "#",
+                                      "label": "Constante: 1",
+                                      "cls": "kind-const"
+                                    }
+                                  },
+                                  null
+                                ],
+                                "sibling": null,
+                                "display": {
+                                  "icon": "op",
+                                  "label": "Op: -",
+                                  "cls": "kind-op"
+                                }
+                              },
+                              null,
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "=",
+                              "label": "Asignar: y",
+                              "cls": "kind-stmt"
+                            }
+                          },
+                          {
+                            "nodekind": "ExpK",
+                            "kind": {
+                              "exp": "OpK"
+                            },
+                            "attr": {
+                              "op": "GT"
+                            },
+                            "type": "Void",
+                            "lineno": 29,
+                            "children": [
+                              {
+                                "nodekind": "ExpK",
+                                "kind": {
+                                  "exp": "IdK"
+                                },
+                                "attr": {
+                                  "name": "y"
+                                },
+                                "type": "Void",
+                                "lineno": 29,
+                                "children": [
+                                  null,
+                                  null,
+                                  null
+                                ],
+                                "sibling": null,
+                                "display": {
+                                  "icon": "id",
+                                  "label": "Id: y",
+                                  "cls": "kind-id"
+                                }
+                              },
+                              {
+                                "nodekind": "ExpK",
+                                "kind": {
+                                  "exp": "ConstK"
+                                },
+                                "attr": {
+                                  "val": 0
+                                },
+                                "type": "Integer",
+                                "lineno": 29,
+                                "children": [
+                                  null,
+                                  null,
+                                  null
+                                ],
+                                "sibling": null,
+                                "display": {
+                                  "icon": "#",
+                                  "label": "Constante: 0",
+                                  "cls": "kind-const"
+                                }
+                              },
+                              null
+                            ],
+                            "sibling": null,
+                            "display": {
+                              "icon": "op",
+                              "label": "Op: >",
+                              "cls": "kind-op"
+                            }
+                          },
+                          null
+                        ],
+                        "sibling": {
+                          "nodekind": "StmtK",
+                          "kind": {
+                            "stmt": "SentOutK"
+                          },
+                          "attr": {},
+                          "type": "Void",
+                          "lineno": 31,
+                          "children": [
+                            {
+                              "nodekind": "ExpK",
+                              "kind": {
+                                "exp": "IdK"
+                              },
+                              "attr": {
+                                "name": "resultado"
+                              },
+                              "type": "Void",
+                              "lineno": 31,
+                              "children": [
+                                null,
+                                null,
+                                null
+                              ],
+                              "sibling": null,
+                              "display": {
+                                "icon": "id",
+                                "label": "Id: resultado",
+                                "cls": "kind-id"
+                              }
+                            },
+                            null,
+                            null
+                          ],
+                          "sibling": null,
+                          "display": {
+                            "icon": "out",
+                            "label": "Escribir (cout)",
+                            "cls": "kind-stmt"
+                          }
+                        },
+                        "display": {
+                          "icon": "do",
+                          "label": "Do-While",
+                          "cls": "kind-stmt"
+                        }
+                      },
+                      "display": {
+                        "icon": "wh",
+                        "label": "While",
+                        "cls": "kind-stmt"
+                      }
+                    },
+                    "display": {
+                      "icon": "if",
+                      "label": "If-Else",
+                      "cls": "kind-stmt"
+                    }
+                  },
+                  "display": {
+                    "icon": "=",
+                    "label": "Asignar: resultado",
+                    "cls": "kind-stmt"
+                  }
+                },
+                "display": {
+                  "icon": "=",
+                  "label": "Asignar: activo",
+                  "cls": "kind-stmt"
+                }
+              },
+              "display": {
+                "icon": "in",
+                "label": "Leer (cin): y",
+                "cls": "kind-stmt"
+              }
+            },
+            "display": {
+              "icon": "in",
+              "label": "Leer (cin): x",
+              "cls": "kind-stmt"
+            }
+          },
+          "display": {
+            "icon": "D",
+            "label": "Declaración de variable",
+            "cls": "kind-decl"
+          }
+        },
+        "display": {
+          "icon": "D",
+          "label": "Declaración de variable",
+          "cls": "kind-decl"
+        }
+      },
+      "display": {
+        "icon": "D",
+        "label": "Declaración de variable",
+        "cls": "kind-decl"
+      }
+    },
+    null,
+    null
+  ],
+  "sibling": null,
+  "display": {
+    "icon": "P",
+    "label": "Programa",
+    "cls": "kind-program"
+  }
+}

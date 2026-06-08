@@ -1,0 +1,130 @@
+main {
+
+    int a, b, c;
+    float x, y;
+    bool flag, activo;
+
+    cin >> a;
+    cin >> b;
+    cin >> x; 
+    a = ;
+
+    a = b + c;
+
+    a = b - c;
+
+    a = b * c;
+
+    a = b / c;
+
+    a = b % c;
+
+    x = b ^ 2;
+
+    a = b + c * 2;
+
+    a = (b + c) * 2;
+
+    flag = true;
+    activo = false;
+
+    a = b ++;
+    a = b --;
+
+    if a < b then
+        cout << "a es menor que b";
+    end
+
+    if a <= b then
+        cout << "a es menor o igual que b";
+    end
+
+    if a > b then
+        cout << "a es mayor que b";
+    end
+
+    if a >= b then
+        cout << "a es mayor o igual que b";
+    end
+
+    if a == b then
+        cout << "a es igual a b";
+    end
+
+    if a != b then
+        cout << "a es diferente de b";
+    end
+
+    if a > 0 then
+        cout << "positivo";
+    else
+        cout << "no positivo";
+    end
+
+    if a > 0 then
+        if b > 0 then
+            cout << "ambos positivos";
+        else
+            cout << "b no positivo";
+        end
+    else
+        cout << "a no positivo";
+    end
+
+    while a > 0
+        a = a - 1;
+    end
+
+    while flag
+        b = b + 1;
+        if b == 10 then
+            flag = false;
+        end
+    end
+
+    do
+        c = c + 1;
+    while c < 5;
+
+    do
+        a = a - 1;
+        b = b + 1;
+    while a > 0;
+
+    cout << "texto simple";
+
+    cout << a;
+
+    cout << x;
+
+    cout << "resultado: " << a;
+
+    cout << a << " fin";
+
+    a = (b + c) * (x - 1);
+
+    if flag && activo then
+      cout << "ambos verdaderos";
+   end
+
+    if  flag || activo then 
+      cout << "uno o ambos verdaderos ";
+   end
+
+    flag = ! activo;
+
+    if a > 0 then
+        while b < 10
+            cout << b;
+            b = b + 1;
+        end
+    end
+
+    while activo
+        do
+            c = c + 1;
+        while c < 3;
+        activo = false;
+    end
+
+}

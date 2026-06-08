@@ -1,0 +1,32 @@
+main {
+    int x, y;
+    float resultado;
+    bool activo;
+
+    cin >> x;
+    cin >> y;
+
+    activo = true;
+
+    resultado = x * y;
+
+    if resultado > 0 then
+        cout << "El resultado es positivo: ";
+        cout << resultado;
+    else
+        cout << "El resultado no es positivo";
+    end
+
+    while activo
+        x = x + 1;
+        if x == 10 then
+            activo = false;
+        end
+    end
+
+    do
+        y = y - 1;
+    while y > 0;
+
+    cout << resultado;
+}
