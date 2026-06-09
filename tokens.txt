@@ -13,6 +13,10 @@ COMA             , | Línea: 8   | Columna: 12
 ID               b | Línea: 8   | Columna: 14 
 COMA             , | Línea: 8   | Columna: 15 
 ID               c | Línea: 8   | Columna: 17 
+PUNCOM           ; | Línea: 8   | Columna: 18 
+INT              int | Línea: 11  | Columna: 5  
+ID               suma | Línea: 11  | Columna: 9  
+PUNCOM           ; | Línea: 11  | Columna: 13 
 ID               suma | Línea: 12  | Columna: 5  
 ASSIGN           = | Línea: 12  | Columna: 9  
 NUM_INT          45 | Línea: 12  | Columna: 12 
@@ -67,13 +71,14 @@ LPAREN           ( | Línea: 20  | Columna: 8
 NUM_INT          5 | Línea: 20  | Columna: 10 
 MENOS            - | Línea: 20  | Columna: 11 
 NUM_INT          3 | Línea: 20  | Columna: 14 
-MUL              * | Línea: 20  | Columna: 15 
-LPAREN           ( | Línea: 20  | Columna: 17 
-NUM_INT          8 | Línea: 20  | Columna: 19 
-DIV              / | Línea: 20  | Columna: 20 
-NUM_INT          2 | Línea: 20  | Columna: 23 
-RPAREN           ) | Línea: 20  | Columna: 24 
-PUNCOM           ; | Línea: 20  | Columna: 25 
+RPAREN           ) | Línea: 20  | Columna: 15 
+MUL              * | Línea: 20  | Columna: 16 
+LPAREN           ( | Línea: 20  | Columna: 18 
+NUM_INT          8 | Línea: 20  | Columna: 20 
+DIV              / | Línea: 20  | Columna: 21 
+NUM_INT          2 | Línea: 20  | Columna: 24 
+RPAREN           ) | Línea: 20  | Columna: 25 
+PUNCOM           ; | Línea: 20  | Columna: 26 
 ID               y | Línea: 21  | Columna: 5  
 ASSIGN           = | Línea: 21  | Columna: 6  
 NUM_INT          5 | Línea: 21  | Columna: 9  
@@ -213,12 +218,8 @@ ID               suma | Línea: 56  | Columna: 16
 PUNCOM           ; | Línea: 56  | Columna: 20 
 COUT             cout | Línea: 57  | Columna: 9  
 SHL              << | Línea: 57  | Columna: 13 
-NUM_INT          5 | Línea: 57  | Columna: 17 
-MAS              + | Línea: 57  | Columna: 18 
-NUM_INT          8 | Línea: 57  | Columna: 19 
-MUL              * | Línea: 57  | Columna: 20 
-NUM_INT          3 | Línea: 57  | Columna: 21 
-PUNCOM           ; | Línea: 57  | Columna: 22 
+ID               x | Línea: 57  | Columna: 17 
+PUNCOM           ; | Línea: 57  | Columna: 18 
 END              end | Línea: 58  | Columna: 5  
 RBRACE           } | Línea: 58  | Columna: 8  
 EOF -> Fin del archivo (línea 59, columna 2)

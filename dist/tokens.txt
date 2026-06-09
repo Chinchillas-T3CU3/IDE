@@ -1,237 +1,372 @@
-MAIN -> main
-ID -> sum
-ID -> r
-NUM_FLOAT -> 3.14
-MAS -> +
-MAIN -> main
-RPAREN -> )
-IF -> if
-LBRACE -> {
-ID -> algo
-NUM_FLOAT -> 34.34
-NUM_FLOAT -> 34.34
-LBRACE -> {
-INT -> int
-ID -> x
-COMA -> ,
-ID -> y
-COMA -> ,
-ID -> z
-PUNCOM -> ;
-ID -> real
-ID -> a
-COMA -> ,
-ID -> b
-COMA -> ,
-ID -> c
-PUNCOM -> ;
-ID -> suma
-ASSIGN -> =
-NUM_INT -> 45
-PUNCOM -> ;
-ID -> x
-ASSIGN -> =
-NUM_FLOAT -> 32.32
-PUNCOM -> ;
-ID -> x
-ASSIGN -> =
-NUM_INT -> 23
-PUNCOM -> ;
-ID -> y
-ASSIGN -> =
-NUM_INT -> 2
-MAS -> +
-NUM_INT -> 3
-MENOS -> -
-NUM_INT -> 1
-PUNCOM -> ;
-ID -> z
-ASSIGN -> =
-ID -> y
-MAS -> +
-NUM_INT -> 7
-PUNCOM -> ;
-ID -> y
-ASSIGN -> =
-ID -> y
-MAS -> +
-NUM_INT -> 1
-PUNCOM -> ;
-ID -> a
-ASSIGN -> =
-NUM_FLOAT -> 24.0
-MAS -> +
-NUM_INT -> 4
-MENOS -> -
-NUM_INT -> 1
-DIV -> /
-NUM_INT -> 3
-MUL -> *
-NUM_INT -> 2
-MAS -> +
-NUM_INT -> 34
-MENOS -> -
-NUM_INT -> 1
-PUNCOM -> ;
-ID -> x
-ASSIGN -> =
-LPAREN -> (
-NUM_INT -> 5
-MENOS -> -
-NUM_INT -> 3
-RPAREN -> )
-MUL -> *
-LPAREN -> (
-NUM_INT -> 8
-DIV -> /
-NUM_INT -> 2
-RPAREN -> )
-PUNCOM -> ;
-ID -> y
-ASSIGN -> =
-NUM_INT -> 5
-MAS -> +
-NUM_INT -> 3
-MENOS -> -
-NUM_INT -> 2
-MUL -> *
-NUM_INT -> 4
-DIV -> /
-NUM_INT -> 7
-MENOS -> -
-NUM_INT -> 9
-PUNCOM -> ;
-ID -> z
-ASSIGN -> =
-NUM_INT -> 8
-DIV -> /
-NUM_INT -> 2
-MAS -> +
-NUM_INT -> 15
-MUL -> *
-NUM_INT -> 4
-PUNCOM -> ;
-ID -> y
-ASSIGN -> =
-NUM_FLOAT -> 14.54
-PUNCOM -> ;
-IF -> if
-LPAREN -> (
-NUM_INT -> 2
-GT -> >
-NUM_INT -> 3
-RPAREN -> )
-ID -> then
-ID -> y
-ASSIGN -> =
-ID -> a
-MAS -> +
-NUM_INT -> 3
-PUNCOM -> ;
-ELSE -> else
-IF -> if
-LPAREN -> (
-NUM_INT -> 4
-GT -> >
-NUM_INT -> 2
-AND -> &&
-RPAREN -> )
-ID -> then
-ID -> b
-ASSIGN -> =
-NUM_FLOAT -> 3.2
-PUNCOM -> ;
-ELSE -> else
-ID -> b
-ASSIGN -> =
-NUM_FLOAT -> 5.0
-PUNCOM -> ;
-END -> end
-PUNCOM -> ;
-ID -> y
-ASSIGN -> =
-ID -> y
-MAS -> +
-NUM_INT -> 1
-PUNCOM -> ;
-END -> end
-PUNCOM -> ;
-ID -> a
-INC -> ++
-PUNCOM -> ;
-ID -> c
-DEC -> --
-PUNCOM -> ;
-ID -> x
-ASSIGN -> =
-NUM_INT -> 3
-MAS -> +
-NUM_INT -> 4
-PUNCOM -> ;
-DO -> do
-ID -> y
-ASSIGN -> =
-LPAREN -> (
-ID -> y
-MAS -> +
-NUM_INT -> 1
-RPAREN -> )
-MUL -> *
-NUM_INT -> 2
-MAS -> +
-NUM_INT -> 1
-PUNCOM -> ;
-WHILE -> while
-LPAREN -> (
-ID -> x
-GT -> >
-NUM_INT -> 7
-RPAREN -> )
-LBRACE -> {
-ID -> x
-ASSIGN -> =
-NUM_INT -> 6
-MAS -> +
-NUM_INT -> 8
-DIV -> /
-NUM_INT -> 9
-MUL -> *
-NUM_INT -> 8
-DIV -> /
-NUM_INT -> 3
-PUNCOM -> ;
-CIN -> cin
-ID -> x
-PUNCOM -> ;
-ID -> mas
-ASSIGN -> =
-NUM_INT -> 36
-DIV -> /
-NUM_INT -> 7
-PUNCOM -> ;
-RBRACE -> }
-PUNCOM -> ;
-ID -> until
-LPAREN -> (
-ID -> y
-EQ -> ==
-NUM_INT -> 5
-RPAREN -> )
-PUNCOM -> ;
-WHILE -> while
-LPAREN -> (
-ID -> y
-EQ -> ==
-NUM_INT -> 0
-RPAREN -> )
-LBRACE -> {
-CIN -> cin
-ID -> mas
-PUNCOM -> ;
-COUT -> cout
-ID -> x
-PUNCOM -> ;
-RBRACE -> }
-PUNCOM -> ;
-RBRACE -> }
-EOF -> 
+MAIN             main | Línea: 1   | Columna: 1  
+LBRACE           { | Línea: 1   | Columna: 5  
+INT              int | Línea: 3   | Columna: 5  
+ID               a | Línea: 3   | Columna: 9  
+COMA             , | Línea: 3   | Columna: 10 
+ID               b | Línea: 3   | Columna: 12 
+COMA             , | Línea: 3   | Columna: 13 
+ID               c | Línea: 3   | Columna: 15 
+PUNCOM           ; | Línea: 3   | Columna: 16 
+FLOAT            float | Línea: 4   | Columna: 5  
+ID               x | Línea: 4   | Columna: 11 
+COMA             , | Línea: 4   | Columna: 12 
+ID               y | Línea: 4   | Columna: 14 
+PUNCOM           ; | Línea: 4   | Columna: 15 
+BOOL             bool | Línea: 5   | Columna: 5  
+ID               flag | Línea: 5   | Columna: 10 
+COMA             , | Línea: 5   | Columna: 14 
+ID               activo | Línea: 5   | Columna: 16 
+PUNCOM           ; | Línea: 5   | Columna: 22 
+CIN              cin | Línea: 7   | Columna: 5  
+SHR              >> | Línea: 7   | Columna: 8  
+ID               a | Línea: 7   | Columna: 12 
+PUNCOM           ; | Línea: 7   | Columna: 13 
+CIN              cin | Línea: 8   | Columna: 5  
+SHR              >> | Línea: 8   | Columna: 8  
+ID               b | Línea: 8   | Columna: 12 
+PUNCOM           ; | Línea: 8   | Columna: 13 
+CIN              cin | Línea: 9   | Columna: 5  
+SHR              >> | Línea: 9   | Columna: 8  
+ID               x | Línea: 9   | Columna: 12 
+PUNCOM           ; | Línea: 9   | Columna: 13 
+ID               a | Línea: 10  | Columna: 5  
+ASSIGN           = | Línea: 10  | Columna: 6  
+PUNCOM           ; | Línea: 10  | Columna: 8  
+ID               a | Línea: 12  | Columna: 5  
+ASSIGN           = | Línea: 12  | Columna: 6  
+ID               b | Línea: 12  | Columna: 9  
+MAS              + | Línea: 12  | Columna: 10 
+ID               c | Línea: 12  | Columna: 13 
+PUNCOM           ; | Línea: 12  | Columna: 14 
+ID               a | Línea: 14  | Columna: 5  
+ASSIGN           = | Línea: 14  | Columna: 6  
+ID               b | Línea: 14  | Columna: 9  
+MENOS            - | Línea: 14  | Columna: 10 
+ID               c | Línea: 14  | Columna: 13 
+PUNCOM           ; | Línea: 14  | Columna: 14 
+ID               a | Línea: 16  | Columna: 5  
+ASSIGN           = | Línea: 16  | Columna: 6  
+ID               b | Línea: 16  | Columna: 9  
+MUL              * | Línea: 16  | Columna: 10 
+ID               c | Línea: 16  | Columna: 13 
+PUNCOM           ; | Línea: 16  | Columna: 14 
+ID               a | Línea: 18  | Columna: 5  
+ASSIGN           = | Línea: 18  | Columna: 6  
+ID               b | Línea: 18  | Columna: 9  
+DIV              / | Línea: 18  | Columna: 10 
+ID               c | Línea: 18  | Columna: 13 
+PUNCOM           ; | Línea: 18  | Columna: 14 
+ID               a | Línea: 20  | Columna: 5  
+ASSIGN           = | Línea: 20  | Columna: 6  
+ID               b | Línea: 20  | Columna: 9  
+MOD              % | Línea: 20  | Columna: 10 
+ID               c | Línea: 20  | Columna: 13 
+PUNCOM           ; | Línea: 20  | Columna: 14 
+ID               x | Línea: 22  | Columna: 5  
+ASSIGN           = | Línea: 22  | Columna: 6  
+ID               b | Línea: 22  | Columna: 9  
+POT              ^ | Línea: 22  | Columna: 10 
+NUM_INT          2 | Línea: 22  | Columna: 13 
+PUNCOM           ; | Línea: 22  | Columna: 14 
+ID               a | Línea: 24  | Columna: 5  
+ASSIGN           = | Línea: 24  | Columna: 6  
+ID               b | Línea: 24  | Columna: 9  
+MAS              + | Línea: 24  | Columna: 10 
+ID               c | Línea: 24  | Columna: 13 
+MUL              * | Línea: 24  | Columna: 14 
+NUM_INT          2 | Línea: 24  | Columna: 17 
+PUNCOM           ; | Línea: 24  | Columna: 18 
+ID               a | Línea: 26  | Columna: 5  
+ASSIGN           = | Línea: 26  | Columna: 6  
+LPAREN           ( | Línea: 26  | Columna: 8  
+ID               b | Línea: 26  | Columna: 10 
+MAS              + | Línea: 26  | Columna: 11 
+ID               c | Línea: 26  | Columna: 14 
+RPAREN           ) | Línea: 26  | Columna: 15 
+MUL              * | Línea: 26  | Columna: 16 
+NUM_INT          2 | Línea: 26  | Columna: 19 
+PUNCOM           ; | Línea: 26  | Columna: 20 
+ID               flag | Línea: 28  | Columna: 5  
+ASSIGN           = | Línea: 28  | Columna: 9  
+TRUE             true | Línea: 28  | Columna: 12 
+PUNCOM           ; | Línea: 28  | Columna: 16 
+ID               activo | Línea: 29  | Columna: 5  
+ASSIGN           = | Línea: 29  | Columna: 11 
+FALSE            false | Línea: 29  | Columna: 14 
+PUNCOM           ; | Línea: 29  | Columna: 19 
+ID               a | Línea: 31  | Columna: 5  
+ASSIGN           = | Línea: 31  | Columna: 6  
+ID               b | Línea: 31  | Columna: 9  
+INC              ++ | Línea: 31  | Columna: 10 
+PUNCOM           ; | Línea: 31  | Columna: 13 
+ID               a | Línea: 32  | Columna: 5  
+ASSIGN           = | Línea: 32  | Columna: 6  
+ID               b | Línea: 32  | Columna: 9  
+DEC              -- | Línea: 32  | Columna: 10 
+PUNCOM           ; | Línea: 32  | Columna: 13 
+IF               if | Línea: 34  | Columna: 5  
+ID               a | Línea: 34  | Columna: 8  
+LT               < | Línea: 34  | Columna: 9  
+ID               b | Línea: 34  | Columna: 12 
+THEN             then | Línea: 34  | Columna: 14 
+COUT             cout | Línea: 35  | Columna: 9  
+SHL              << | Línea: 35  | Columna: 13 
+STRING           "a es menor que b" | Línea: 35  | Columna: 17 
+PUNCOM           ; | Línea: 35  | Columna: 35 
+END              end | Línea: 36  | Columna: 5  
+IF               if | Línea: 38  | Columna: 5  
+ID               a | Línea: 38  | Columna: 8  
+LE               <= | Línea: 38  | Columna: 9  
+ID               b | Línea: 38  | Columna: 13 
+THEN             then | Línea: 38  | Columna: 15 
+COUT             cout | Línea: 39  | Columna: 9  
+SHL              << | Línea: 39  | Columna: 13 
+STRING           "a es menor o igual que b" | Línea: 39  | Columna: 17 
+PUNCOM           ; | Línea: 39  | Columna: 43 
+END              end | Línea: 40  | Columna: 5  
+IF               if | Línea: 42  | Columna: 5  
+ID               a | Línea: 42  | Columna: 8  
+GT               > | Línea: 42  | Columna: 9  
+ID               b | Línea: 42  | Columna: 12 
+THEN             then | Línea: 42  | Columna: 14 
+COUT             cout | Línea: 43  | Columna: 9  
+SHL              << | Línea: 43  | Columna: 13 
+STRING           "a es mayor que b" | Línea: 43  | Columna: 17 
+PUNCOM           ; | Línea: 43  | Columna: 35 
+END              end | Línea: 44  | Columna: 5  
+IF               if | Línea: 46  | Columna: 5  
+ID               a | Línea: 46  | Columna: 8  
+GE               >= | Línea: 46  | Columna: 9  
+ID               b | Línea: 46  | Columna: 13 
+THEN             then | Línea: 46  | Columna: 15 
+COUT             cout | Línea: 47  | Columna: 9  
+SHL              << | Línea: 47  | Columna: 13 
+STRING           "a es mayor o igual que b" | Línea: 47  | Columna: 17 
+PUNCOM           ; | Línea: 47  | Columna: 43 
+END              end | Línea: 48  | Columna: 5  
+IF               if | Línea: 50  | Columna: 5  
+ID               a | Línea: 50  | Columna: 8  
+EQ               == | Línea: 50  | Columna: 9  
+ID               b | Línea: 50  | Columna: 13 
+THEN             then | Línea: 50  | Columna: 15 
+COUT             cout | Línea: 51  | Columna: 9  
+SHL              << | Línea: 51  | Columna: 13 
+STRING           "a es igual a b" | Línea: 51  | Columna: 17 
+PUNCOM           ; | Línea: 51  | Columna: 33 
+END              end | Línea: 52  | Columna: 5  
+IF               if | Línea: 54  | Columna: 5  
+ID               a | Línea: 54  | Columna: 8  
+NE               != | Línea: 54  | Columna: 9  
+ID               b | Línea: 54  | Columna: 13 
+THEN             then | Línea: 54  | Columna: 15 
+COUT             cout | Línea: 55  | Columna: 9  
+SHL              << | Línea: 55  | Columna: 13 
+STRING           "a es diferente de b" | Línea: 55  | Columna: 17 
+PUNCOM           ; | Línea: 55  | Columna: 38 
+END              end | Línea: 56  | Columna: 5  
+IF               if | Línea: 58  | Columna: 5  
+ID               a | Línea: 58  | Columna: 8  
+GT               > | Línea: 58  | Columna: 9  
+NUM_INT          0 | Línea: 58  | Columna: 12 
+THEN             then | Línea: 58  | Columna: 14 
+COUT             cout | Línea: 59  | Columna: 9  
+SHL              << | Línea: 59  | Columna: 13 
+STRING           "positivo" | Línea: 59  | Columna: 17 
+PUNCOM           ; | Línea: 59  | Columna: 27 
+ELSE             else | Línea: 60  | Columna: 5  
+COUT             cout | Línea: 61  | Columna: 9  
+SHL              << | Línea: 61  | Columna: 13 
+STRING           "no positivo" | Línea: 61  | Columna: 17 
+PUNCOM           ; | Línea: 61  | Columna: 30 
+END              end | Línea: 62  | Columna: 5  
+IF               if | Línea: 64  | Columna: 5  
+ID               a | Línea: 64  | Columna: 8  
+GT               > | Línea: 64  | Columna: 9  
+NUM_INT          0 | Línea: 64  | Columna: 12 
+THEN             then | Línea: 64  | Columna: 14 
+IF               if | Línea: 65  | Columna: 9  
+ID               b | Línea: 65  | Columna: 12 
+GT               > | Línea: 65  | Columna: 13 
+NUM_INT          0 | Línea: 65  | Columna: 16 
+THEN             then | Línea: 65  | Columna: 18 
+COUT             cout | Línea: 66  | Columna: 13 
+SHL              << | Línea: 66  | Columna: 17 
+STRING           "ambos positivos" | Línea: 66  | Columna: 21 
+PUNCOM           ; | Línea: 66  | Columna: 38 
+ELSE             else | Línea: 67  | Columna: 9  
+COUT             cout | Línea: 68  | Columna: 13 
+SHL              << | Línea: 68  | Columna: 17 
+STRING           "b no positivo" | Línea: 68  | Columna: 21 
+PUNCOM           ; | Línea: 68  | Columna: 36 
+END              end | Línea: 69  | Columna: 9  
+ELSE             else | Línea: 70  | Columna: 5  
+COUT             cout | Línea: 71  | Columna: 9  
+SHL              << | Línea: 71  | Columna: 13 
+STRING           "a no positivo" | Línea: 71  | Columna: 17 
+PUNCOM           ; | Línea: 71  | Columna: 32 
+END              end | Línea: 72  | Columna: 5  
+WHILE            while | Línea: 74  | Columna: 5  
+ID               a | Línea: 74  | Columna: 11 
+GT               > | Línea: 74  | Columna: 12 
+NUM_INT          0 | Línea: 74  | Columna: 15 
+ID               a | Línea: 75  | Columna: 9  
+ASSIGN           = | Línea: 75  | Columna: 10 
+ID               a | Línea: 75  | Columna: 13 
+MENOS            - | Línea: 75  | Columna: 14 
+NUM_INT          1 | Línea: 75  | Columna: 17 
+PUNCOM           ; | Línea: 75  | Columna: 18 
+END              end | Línea: 76  | Columna: 5  
+WHILE            while | Línea: 78  | Columna: 5  
+ID               flag | Línea: 78  | Columna: 11 
+ID               b | Línea: 79  | Columna: 9  
+ASSIGN           = | Línea: 79  | Columna: 10 
+ID               b | Línea: 79  | Columna: 13 
+MAS              + | Línea: 79  | Columna: 14 
+NUM_INT          1 | Línea: 79  | Columna: 17 
+PUNCOM           ; | Línea: 79  | Columna: 18 
+IF               if | Línea: 80  | Columna: 9  
+ID               b | Línea: 80  | Columna: 12 
+EQ               == | Línea: 80  | Columna: 13 
+NUM_INT          10 | Línea: 80  | Columna: 17 
+THEN             then | Línea: 80  | Columna: 20 
+ID               flag | Línea: 81  | Columna: 13 
+ASSIGN           = | Línea: 81  | Columna: 17 
+FALSE            false | Línea: 81  | Columna: 20 
+PUNCOM           ; | Línea: 81  | Columna: 25 
+END              end | Línea: 82  | Columna: 9  
+END              end | Línea: 83  | Columna: 5  
+DO               do | Línea: 85  | Columna: 5  
+ID               c | Línea: 86  | Columna: 9  
+ASSIGN           = | Línea: 86  | Columna: 10 
+ID               c | Línea: 86  | Columna: 13 
+MAS              + | Línea: 86  | Columna: 14 
+NUM_INT          1 | Línea: 86  | Columna: 17 
+PUNCOM           ; | Línea: 86  | Columna: 18 
+WHILE            while | Línea: 87  | Columna: 5  
+ID               c | Línea: 87  | Columna: 11 
+LT               < | Línea: 87  | Columna: 12 
+NUM_INT          5 | Línea: 87  | Columna: 15 
+PUNCOM           ; | Línea: 87  | Columna: 16 
+DO               do | Línea: 89  | Columna: 5  
+ID               a | Línea: 90  | Columna: 9  
+ASSIGN           = | Línea: 90  | Columna: 10 
+ID               a | Línea: 90  | Columna: 13 
+MENOS            - | Línea: 90  | Columna: 14 
+NUM_INT          1 | Línea: 90  | Columna: 17 
+PUNCOM           ; | Línea: 90  | Columna: 18 
+ID               b | Línea: 91  | Columna: 9  
+ASSIGN           = | Línea: 91  | Columna: 10 
+ID               b | Línea: 91  | Columna: 13 
+MAS              + | Línea: 91  | Columna: 14 
+NUM_INT          1 | Línea: 91  | Columna: 17 
+PUNCOM           ; | Línea: 91  | Columna: 18 
+WHILE            while | Línea: 92  | Columna: 5  
+ID               a | Línea: 92  | Columna: 11 
+GT               > | Línea: 92  | Columna: 12 
+NUM_INT          0 | Línea: 92  | Columna: 15 
+PUNCOM           ; | Línea: 92  | Columna: 16 
+COUT             cout | Línea: 94  | Columna: 5  
+SHL              << | Línea: 94  | Columna: 9  
+STRING           "texto simple" | Línea: 94  | Columna: 13 
+PUNCOM           ; | Línea: 94  | Columna: 27 
+COUT             cout | Línea: 96  | Columna: 5  
+SHL              << | Línea: 96  | Columna: 9  
+ID               a | Línea: 96  | Columna: 13 
+PUNCOM           ; | Línea: 96  | Columna: 14 
+COUT             cout | Línea: 98  | Columna: 5  
+SHL              << | Línea: 98  | Columna: 9  
+ID               x | Línea: 98  | Columna: 13 
+PUNCOM           ; | Línea: 98  | Columna: 14 
+COUT             cout | Línea: 100 | Columna: 5  
+SHL              << | Línea: 100 | Columna: 9  
+STRING           "resultado: " | Línea: 100 | Columna: 13 
+SHL              << | Línea: 100 | Columna: 26 
+ID               a | Línea: 100 | Columna: 30 
+PUNCOM           ; | Línea: 100 | Columna: 31 
+COUT             cout | Línea: 102 | Columna: 5  
+SHL              << | Línea: 102 | Columna: 9  
+ID               a | Línea: 102 | Columna: 13 
+SHL              << | Línea: 102 | Columna: 14 
+STRING           " fin" | Línea: 102 | Columna: 18 
+PUNCOM           ; | Línea: 102 | Columna: 24 
+ID               a | Línea: 104 | Columna: 5  
+ASSIGN           = | Línea: 104 | Columna: 6  
+LPAREN           ( | Línea: 104 | Columna: 8  
+ID               b | Línea: 104 | Columna: 10 
+MAS              + | Línea: 104 | Columna: 11 
+ID               c | Línea: 104 | Columna: 14 
+RPAREN           ) | Línea: 104 | Columna: 15 
+MUL              * | Línea: 104 | Columna: 16 
+LPAREN           ( | Línea: 104 | Columna: 18 
+ID               x | Línea: 104 | Columna: 20 
+MENOS            - | Línea: 104 | Columna: 21 
+NUM_INT          1 | Línea: 104 | Columna: 24 
+RPAREN           ) | Línea: 104 | Columna: 25 
+PUNCOM           ; | Línea: 104 | Columna: 26 
+IF               if | Línea: 106 | Columna: 5  
+ID               flag | Línea: 106 | Columna: 8  
+AND              && | Línea: 106 | Columna: 12 
+ID               activo | Línea: 106 | Columna: 16 
+THEN             then | Línea: 106 | Columna: 23 
+COUT             cout | Línea: 107 | Columna: 7  
+SHL              << | Línea: 107 | Columna: 11 
+STRING           "ambos verdaderos" | Línea: 107 | Columna: 15 
+PUNCOM           ; | Línea: 107 | Columna: 33 
+END              end | Línea: 108 | Columna: 4  
+IF               if | Línea: 110 | Columna: 5  
+ID               flag | Línea: 110 | Columna: 9  
+OR               || | Línea: 110 | Columna: 13 
+ID               activo | Línea: 110 | Columna: 17 
+THEN             then | Línea: 110 | Columna: 24 
+COUT             cout | Línea: 111 | Columna: 7  
+SHL              << | Línea: 111 | Columna: 11 
+STRING           "uno o ambos verdaderos " | Línea: 111 | Columna: 15 
+PUNCOM           ; | Línea: 111 | Columna: 40 
+END              end | Línea: 112 | Columna: 4  
+ID               flag | Línea: 114 | Columna: 5  
+ASSIGN           = | Línea: 114 | Columna: 9  
+NOT              ! | Línea: 114 | Columna: 11 
+ID               activo | Línea: 114 | Columna: 14 
+PUNCOM           ; | Línea: 114 | Columna: 20 
+IF               if | Línea: 116 | Columna: 5  
+ID               a | Línea: 116 | Columna: 8  
+GT               > | Línea: 116 | Columna: 9  
+NUM_INT          0 | Línea: 116 | Columna: 12 
+THEN             then | Línea: 116 | Columna: 14 
+WHILE            while | Línea: 117 | Columna: 9  
+ID               b | Línea: 117 | Columna: 15 
+LT               < | Línea: 117 | Columna: 16 
+NUM_INT          10 | Línea: 117 | Columna: 19 
+COUT             cout | Línea: 118 | Columna: 13 
+SHL              << | Línea: 118 | Columna: 17 
+ID               b | Línea: 118 | Columna: 21 
+PUNCOM           ; | Línea: 118 | Columna: 22 
+ID               b | Línea: 119 | Columna: 13 
+ASSIGN           = | Línea: 119 | Columna: 14 
+ID               b | Línea: 119 | Columna: 17 
+MAS              + | Línea: 119 | Columna: 18 
+NUM_INT          1 | Línea: 119 | Columna: 21 
+PUNCOM           ; | Línea: 119 | Columna: 22 
+END              end | Línea: 120 | Columna: 9  
+END              end | Línea: 121 | Columna: 5  
+WHILE            while | Línea: 123 | Columna: 5  
+ID               activo | Línea: 123 | Columna: 11 
+DO               do | Línea: 124 | Columna: 9  
+ID               c | Línea: 125 | Columna: 13 
+ASSIGN           = | Línea: 125 | Columna: 14 
+ID               c | Línea: 125 | Columna: 17 
+MAS              + | Línea: 125 | Columna: 18 
+NUM_INT          1 | Línea: 125 | Columna: 21 
+PUNCOM           ; | Línea: 125 | Columna: 22 
+WHILE            while | Línea: 126 | Columna: 9  
+ID               c | Línea: 126 | Columna: 15 
+LT               < | Línea: 126 | Columna: 16 
+NUM_INT          3 | Línea: 126 | Columna: 19 
+PUNCOM           ; | Línea: 126 | Columna: 20 
+ID               activo | Línea: 127 | Columna: 9  
+ASSIGN           = | Línea: 127 | Columna: 15 
+FALSE            false | Línea: 127 | Columna: 18 
+PUNCOM           ; | Línea: 127 | Columna: 23 
+END              end | Línea: 128 | Columna: 5  
+RBRACE           } | Línea: 128 | Columna: 8  
+EOF -> Fin del archivo (línea 130, columna 2)

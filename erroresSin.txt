@@ -1,3 +1,0 @@
-ERRORES SINTÁCTICOS
-1. Error sintáctico en la línea 12, columna 5: se esperaba ';', se encontró 'suma'
-2. Error sintáctico en la línea 20, columna 25: se esperaba ')', se encontró ';'
