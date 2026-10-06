@@ -1,0 +1,8 @@
+ERRORES SEMÁNTICOS
+============================================================
+1. Error semántico en línea 18: no se puede asignar Float a 'y' (Integer)
+2. Error semántico en línea 46: variable 'mas' usada sin declarar
+3. Error semántico en línea 51: variable 'mas' usada sin declarar
+4. Error semántico en línea 15: no se puede asignar Float a 'y' (Integer)
+5. Error semántico en línea 6: no se puede asignar Float a 'x' (Integer)
+6. Error semántico en línea 5: variable 'suma' usada sin declarar

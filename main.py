@@ -29,117 +29,7 @@ guardarComo_icon = os.path.join(base_path, "icons/guardarComo.png")
 salir_icon = os.path.join(base_path, "icons/salir.png")
 
 
-def _build_tree_html(tree_json: str) -> str:
-    """
-        Genera una página HTML completa con el árbol colapsable.
-        tree_json es el string JSON producido por TreePrinter.toJson().
-        """
-    return f"""<!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <style>
-    body{{font-family:system-ui,sans-serif;font-size:13px;margin:0;padding:8px;
-            background:#fff;color:#1a1a1a}}
-    .node-wrap{{margin:0;padding:0}}
-    .node-row{{display:flex;align-items:center;gap:6px;padding:3px 6px;
-                border-radius:6px;cursor:pointer;user-select:none;min-height:28px}}
-    .node-row:hover{{background:#f3f3f3}}
-    .toggle-btn{{width:14px;height:14px;display:flex;align-items:center;
-                justify-content:center;flex-shrink:0;color:#888;font-size:10px;
-                transition:transform 0.15s}}
-    .toggle-btn.open{{transform:rotate(90deg)}}
-    .toggle-btn.leaf{{opacity:0}}
-    .node-icon{{width:20px;height:20px;border-radius:4px;display:flex;
-                align-items:center;justify-content:center;flex-shrink:0;
-                font-size:10px;font-weight:600}}
-    .node-label{{font-size:13px;color:#1a1a1a}}
-    .children{{padding-left:20px;border-left:1.5px solid #e0e0e0;margin-left:13px}}
-    .role-tag{{font-size:10px;color:#999;padding:2px 0 0 4px;font-family:monospace}}
-    
-    .kind-program .node-icon{{background:#EEEDFE;color:#3C3489}}
-    .kind-decl .node-icon{{background:#E6F1FB;color:#0C447C}}
-    .kind-stmt .node-icon{{background:#E1F5EE;color:#085041}}
-    .kind-op .node-icon{{background:#FAEEDA;color:#854F0B}}
-    .kind-type .node-icon{{background:#FAECE7;color:#712B13}}
-    .kind-id .node-icon{{background:#F1EFE8;color:#444441}}
-    .kind-const .node-icon{{background:#EAF3DE;color:#27500A}}
-    .kind-logic .node-icon{{background:#FBEAF0;color:#72243E}}
-    .kind-str .node-icon{{background:#FCEBEB;color:#791F1F}}
-    .kind-bool .node-icon{{background:#E1F5EE;color:#0F6E56}}
-    </style>
-    </head>
-    <body>
-    <div id="root"></div>
-    <script>
-    const TREE = {tree_json};
-    
-    function buildNode(node){{
-    if(!node) return null;
-    const info = node.display || {{}};
-    const wrap = document.createElement('div');
-    wrap.className = 'node-wrap';
-    
-    const row = document.createElement('div');
-    row.className = 'node-row ' + (info.cls||'');
-    
-    const kids = (node.children||[]).filter(Boolean);
-    const hasSibling = !!node.sibling;
-    
-    const toggle = document.createElement('span');
-    toggle.className = 'toggle-btn' + (kids.length ? ' open' : ' leaf');
-    toggle.innerHTML = '&#9654;';
-    
-    const icon = document.createElement('span');
-    icon.className = 'node-icon';
-    icon.textContent = info.icon || '?';
-    
-    const lbl = document.createElement('span');
-    lbl.className = 'node-label';
-    lbl.textContent = info.label || node.nodekind;
-    
-    row.appendChild(toggle);
-    row.appendChild(icon);
-    row.appendChild(lbl);
-    wrap.appendChild(row);
-    
-    if(kids.length){{
-        const cw = document.createElement('div');
-        cw.className = 'children';
-        const roles = ['child[0]','child[1]','child[2]'];
-        kids.forEach((child, i)=>{{
-        const rl = document.createElement('div');
-        rl.className='role-tag';
-        rl.textContent = roles[i]||'child';
-        cw.appendChild(rl);
-        cw.appendChild(buildNode(child));
-        // hermanos del hijo
-        let sib = child.sibling;
-        while(sib){{
-            const sl = document.createElement('div');
-            sl.className='role-tag';
-            sl.textContent='sibling';
-            cw.appendChild(sl);
-            cw.appendChild(buildNode(sib));
-            sib = sib.sibling;
-        }}
-        }});
-        wrap.appendChild(cw);
-        row.addEventListener('click', ()=>{{
-        const open = cw.style.display !== 'none';
-        cw.style.display = open ? 'none' : '';
-        toggle.classList.toggle('open', !open);
-        }});
-    }}
-    return wrap;
-    }}
-    
-    const root = document.getElementById('root');
-    if(TREE){{ root.appendChild(buildNode(TREE)); }}
-    else{{ root.textContent = 'Árbol vacío'; }}
-    </script>
-    </body>
-    </html>"""
+
 # ===============================
 # Ventana principal
 # ===============================
@@ -176,7 +66,7 @@ class CompilerIDE(QMainWindow):
         self.tab_sintactico = QTreeWidget()  # Cambiar a QTreeWidget
         self.tab_sintactico.setHeaderLabel("Árbol Sintáctico")  # Título
         self.tab_sintactico.setIndentation(20)  # Indentación
-        self.tab_semantico = QTextEdit()
+        self.tab_semantico = QTreeWidget()
         self.tab_tabla = QTextEdit()
         self.tab_codigo = QTextEdit()
 
@@ -513,15 +403,16 @@ class CompilerIDE(QMainWindow):
         self.result_compilado.clear()
 
         #self.lexicoCode()
-        self.SintacticCode()
+        #self.SintacticCode()
+        self.semanticCode()
 
         # Simulación
         #self.tab_sintactico.setText("Resultado análisis sintáctico")
-        self.tab_semantico.setText("Resultado análisis semántico")
-        self.tab_tabla.setText("Tabla de símbolos")
+        #self.tab_semantico.setText("Resultado análisis semántico")
+        #self.tab_tabla.setText("Tabla de símbolos")
         self.tab_codigo.setText("Código intermedio generado")
         #self.error_sintactico.setText("Errores de análisis sintáctico")
-        self.error_semantico.setText("Errores de análisis semántico")
+        #self.error_semantico.setText("Errores de análisis semántico")
         self.result_compilado.setText("Resultado completo")
 
         QMessageBox.information(self, "Compilación", "Proceso terminado")
@@ -789,11 +680,148 @@ class CompilerIDE(QMainWindow):
             self.addNodeToTree(node.sibling, parent_item)
 
     def semanticCode(self):
-        self.tab_semantico.setText("Resultado análisis semántico")
-        self.error_semantico.setText("Errores de análisis semántico")
+        """
+        Análisis semántico:
+          - Construye la tabla de símbolos (solo desde declaraciones)
+          - Construye el árbol anotado con tipos y valores constantes
+          - Muestra el árbol anotado en tab_semantico (QTreeWidget)
+          - Muestra la tabla de símbolos en tab_tabla
+          - Muestra errores en error_semantico
+        """
+        self.tab_semantico.clear()
+        self.tab_tabla.clear()
+        self.error_semantico.clear()
+
+        self.SintacticCode()
+ 
+        # Necesita el archivo de tokens del análisis sintáctico
+        if not os.path.exists("tokens.txt"):
+            self.error_semantico.setText("Ejecuta primero el análisis sintáctico")
+            return
+ 
+        # Verificar que no haya errores sintácticos antes de continuar
+        if os.path.exists("erroresSin.txt"):
+            with open("erroresSin.txt", "r", encoding="utf-8") as f:
+                sins = f.read().strip()
+            if sins:
+                self.error_semantico.setText(
+                    "Hay errores sintácticos. Corrígelos antes del análisis semántico.\n\n" + sins)
+                return
+ 
+        try:
+            from parse          import Parser
+            from semantico import SemanticAnalyzer
+ 
+            # Re-parsear para obtener el AST
+            parser      = Parser("tokens.txt")
+            syntax_tree = parser.parse()
+ 
+            if syntax_tree is None:
+                self.error_semantico.setText("No se pudo generar el árbol sintáctico")
+                return
+ 
+            # Análisis semántico completo
+            analyzer                          = SemanticAnalyzer()
+            annotated_tree, tabla_str, err_str = analyzer.analyze(syntax_tree)
+ 
+            # ── Árbol anotado en tab_semantico ───────────────
+            self.buildAnnotatedTreeWidget(annotated_tree)
+ 
+            # ── Tabla de símbolos en tab_tabla ───────────────
+            self.tab_tabla.setText(tabla_str)
+ 
+            # ── Errores semánticos ───────────────────────────
+            if analyzer.errors:
+                self.error_semantico.setText(f"\n{err_str}")
+            else:
+                self.error_semantico.setText(" Sin errores semánticos")
+ 
+            # Guardar tabla en archivo
+            with open("tabla_simbolos.txt", "w", encoding="utf-8") as f:
+                f.write(tabla_str)
+ 
+            # Cambiar al tab semántico automáticamente
+            self.tabs.setCurrentWidget(self.tab_semantico)
+ 
+        except Exception as e:
+            self.error_semantico.setText(str(e))
+            import traceback
+            traceback.print_exc()
+ 
+    def buildAnnotatedTreeWidget(self, ann_tree):
+        """
+        Construye el QTreeWidget del árbol anotado semánticamente.
+        Muestra tipo, valor constante y referencias a la tabla de símbolos.
+        """
+        self.tab_semantico.clear()
+        self.tab_semantico.setHeaderLabel(
+            "Árbol Sintáctico Anotado — tipos, valores y símbolos")
+        self.tab_semantico.setIndentation(20)
+        self.tab_semantico.setColumnCount(1)
+ 
+        if ann_tree is None:
+            self.tab_semantico.setHeaderLabel("Sin árbol anotado")
+            return
+ 
+        root_item = QTreeWidgetItem(self.tab_semantico)
+        self._addAnnotatedNode(ann_tree, root_item)
+        self.tab_semantico.expandAll()
+        self.tab_semantico.resizeColumnToContents(0)
+ 
+    def _addAnnotatedNode(self, ann, parent_item):
+        """Agrega recursivamente los nodos anotados al QTreeWidget."""
+        if ann is None:
+            return
+ 
+        label = ann.display_label()
+        item  = QTreeWidgetItem(parent_item)
+        item.setText(0, label)
+ 
+        # Color según tipo semántico calculado
+        color = self._semTypeColor(ann)
+        item.setForeground(0, color)
+ 
+        # Negrita para nodos con error semántico
+        if ann.sem_error:
+            font = item.font(0)
+            font.setBold(True)
+            item.setFont(0, font)
+            item.setForeground(0, Qt.GlobalColor.red)
+ 
+        # Procesar hijos
+        for child in ann.children:
+            if child is not None:
+                self._addAnnotatedNode(child, item)
+ 
+        # Procesar hermanos al mismo nivel
+        if ann.sibling is not None:
+            self._addAnnotatedNode(ann.sibling, parent_item)
+ 
+    def _semTypeColor(self, ann):
+        """Devuelve color según el tipo semántico del nodo."""
+        t = ann.sem_type
+        colors = {
+            "Integer": Qt.GlobalColor.cyan,
+            "Float":   Qt.GlobalColor.green,
+            "Boolean": Qt.GlobalColor.yellow,
+            "String":  Qt.GlobalColor.magenta,
+            "Void":    Qt.GlobalColor.white,
+        }
+        return colors.get(t, Qt.GlobalColor.white)
 
     def TabSimbolCode(self):
-        self.tab_tabla.setText("Tabla de símbolos")
+        if not hasattr(self, '_tabla_simbolos_str') or not self._tabla_simbolos_str:
+        # Si no se ha ejecutado el semántico, intentar leer el archivo
+            if os.path.exists("tabla_simbolos.txt"):
+                with open("tabla_simbolos.txt", "r", encoding="utf-8") as f:
+                    self.tab_tabla.setText(f.read())
+            else:
+                self.tab_tabla.setText(
+                    "No hay tabla de símbolos.\nEjecuta primero el Análisis Semántico.")
+        else:
+            self.tab_tabla.setText(self._tabla_simbolos_str)
+    
+        self.tabs.setCurrentWidget(self.tab_tabla)
 
     def InterCodeCode(self):
         self.tab_codigo.setText("Código intermedio generado")
