@@ -1,31 +1,44 @@
 # ============================================================
+# semantico.py
 # Tabla de símbolos + Analizador Semántico para ChinchIDE
+# Evaluación de expresiones constantes con propagación de valores
 # ============================================================
 
 SIZE  = 211
 SHIFT = 4
 
+OPS = {
+    "MAS":"+","MENOS":"-","MUL":"*","DIV":"/","MOD":"%","POT":"^",
+    "LT":"<","LE":"<=","GT":">","GE":">=","EQ":"==","NE":"!=",
+    "INC":"++","DEC":"--","AND":"&&","OR":"||","NOT":"!",
+    "SHL":"<<","SHR":">>"
+}
 
 # ─────────────────────────────────────────────────────────────
 # ESTRUCTURAS DE LA TABLA HASH
 # ─────────────────────────────────────────────────────────────
 
 class LineList:
-    """Lista enlazada de líneas donde aparece una variable."""
     def __init__(self, lineno):
         self.lineno = lineno
         self.next   = None
 
-
 class BucketList:
-    """Entrada en la tabla hash."""
     def __init__(self, name, lineno, memloc, var_type="Void"):
         self.name   = name
         self.memloc = memloc
         self.type   = var_type
+        self.value = None
+        """if var_type == "Integer":
+            self.value = 0
+        elif var_type == "Float":
+            self.value = 0.0
+        elif var_type == "Boolean":
+            self.value = False
+        else:
+            self.value = None"""
         self.lines  = LineList(lineno)
         self.next   = None
-
 
 # ─────────────────────────────────────────────────────────────
 # TABLA DE SÍMBOLOS
@@ -43,16 +56,14 @@ class SymbolTable:
             temp = ((temp << SHIFT) + ord(ch)) % SIZE
         return temp
 
-    def st_insert(self, name: str, lineno: int, var_type: str = "Void"):
-        """Inserta una variable nueva (solo desde declaraciones)."""
+    def st_insert(self, name, lineno, var_type="Void"):
         h          = self._hash(name)
         new_bucket = BucketList(name, lineno, self.location, var_type)
         new_bucket.next    = self.hash_table[h]
         self.hash_table[h] = new_bucket
         self.location     += 1
 
-    def st_add_line(self, name: str, lineno: int) -> bool:
-        """Agrega línea de uso a una variable ya declarada."""
+    def st_add_line(self, name, lineno):
         bucket = self.st_lookup(name)
         if bucket is None:
             return False
@@ -62,23 +73,27 @@ class SymbolTable:
         t.next = LineList(lineno)
         return True
 
-    def st_lookup(self, name: str):
-        """Devuelve BucketList o None."""
+    def st_lookup(self, name):
         h      = self._hash(name)
         bucket = self.hash_table[h]
         while bucket is not None and bucket.name != name:
             bucket = bucket.next
         return bucket
 
-    def st_lookup_location(self, name: str) -> int:
-        b = self.st_lookup(name)
-        if b:
-            return b.memloc
-        else:
-            return -1
+    def st_set_value(self, name, value):
+        bucket = self.st_lookup(name)
+        if bucket is not None:
+            bucket.value = value
 
-    def get_all_symbols(self) -> list:
-        """Devuelve lista de (name, type, memloc, [linenos]) ordenada por memloc."""
+    def st_get_value(self, name):
+        bucket = self.st_lookup(name)
+        return bucket.value if bucket else None
+
+    def st_lookup_location(self, name):
+        b = self.st_lookup(name)
+        return b.memloc if b else -1
+
+    def get_all_symbols(self):
         symbols = []
         for i in range(SIZE):
             bucket = self.hash_table[i]
@@ -88,111 +103,83 @@ class SymbolTable:
                 while t is not None:
                     nums.append(t.lineno)
                     t = t.next
-                nums=sorted(nums)
-                symbols.append((bucket.name, bucket.type, bucket.memloc, nums))
+                nums = sorted(nums)
+                symbols.append((bucket.name, bucket.type,
+                                bucket.memloc, nums, bucket.value))
                 bucket = bucket.next
         symbols.sort(key=lambda x: x[2])
         return symbols
 
-    def printSymTab(self) -> str:
+    def printSymTab(self):
         lines = []
-        lines.append("=" * 65)
+        lines.append("=" * 75)
         lines.append("TABLA DE SÍMBOLOS")
-        lines.append("=" * 65)
-        lines.append(f"{'Variable':<15} {'Tipo':<12} {'Ubicación':<12} Líneas de uso")
-        lines.append(f"{'-'*15} {'-'*12} {'-'*12} {'-'*20}")
-        for name, vtype, memloc, nums in self.get_all_symbols():
-            lines.append(f"{name:<15} {vtype:<12} {memloc:<12} {', '.join(str(n) for n in nums)}")
-        lines.append("=" * 65)
+        lines.append("=" * 75)
+        lines.append(f"{'Variable':<15} {'Tipo':<12} {'Ubic.':<7} "
+                     f"{'Valor':<12} Líneas de uso")
+        lines.append(f"{'-'*15} {'-'*12} {'-'*7} {'-'*12} {'-'*20}")
+        for name, vtype, memloc, nums, val in self.get_all_symbols():
+            val_str = str(val) if val is not None else "?"
+            lines.append(
+                f"{name:<15} {vtype:<12} {memloc:<7} {val_str:<12} "
+                f"{', '.join(str(n) for n in nums)}"
+            )
+        lines.append("=" * 75)
         return "\n".join(lines)
 
 
 # ─────────────────────────────────────────────────────────────
 # NODO ANOTADO
-# Copia del TreeNode con información semántica adicional
 # ─────────────────────────────────────────────────────────────
 
 class AnnotatedNode:
-    """
-    Copia del nodo del AST con anotaciones semánticas:
-      - type      : tipo calculado/propagado
-      - value     : valor constante si se puede determinar en compilación
-      - symbol    : referencia al BucketList de la tabla (si es IdK)
-      - sem_error : error semántico asociado a este nodo (si aplica)
-    """
-    def __init__(self, original_node):
-        # Copiar estructura del nodo original
-        self.nodekind = original_node.nodekind
-        self.kind     = dict(original_node.kind)
-        self.attr     = dict(original_node.attr)
-        self.lineno   = original_node.lineno
-        self.type     = original_node.type   # se actualiza durante el análisis
+    def __init__(self, nodekind, kind, attr, lineno, original_type):
+        self.nodekind  = nodekind
+        self.kind      = kind
+        self.attr      = attr
+        self.lineno    = lineno
+        self.type      = original_type
+        self.sem_type  = "Void"
+        self.sem_value = None
+        self.symbol    = None
+        self.sem_error = None
+        self.children  = [None, None, None]
+        self.sibling   = None
 
-        # Anotaciones semánticas nuevas
-        self.sem_type   = "Void"   # tipo calculado/propagado en esta fase
-        self.sem_value  = None     # valor constante (solo para expresiones constantes)
-        self.symbol     = None     # BucketList si es un identificador
-        self.sem_error  = None     # error semántico en este nodo
-
-        # Hijos y hermano (se llenan al construir el árbol anotado)
-        self.children = [None, None, None]
-        self.sibling  = None
-
-    def display_label(self) -> str:
-        """Texto para mostrar en el árbol anotado."""
-        OPS = {
-            "MAS":"+","MENOS":"-","MUL":"*","DIV":"/","MOD":"%","POT":"^",
-            "LT":"<","LE":"<=","GT":">","GE":">=","EQ":"==","NE":"!=",
-            "INC":"++","DEC":"--","AND":"&&","OR":"||","NOT":"!","SHL":"<<","SHR":">>"
-        }
+    def display_label(self):
         k  = self.nodekind
         dk = self.kind.get("decl","")
         sk = self.kind.get("stmt","")
         ek = self.kind.get("exp","")
 
-        # ── Programa ─────────────────────────────────────────
+        tipo = f"  [tipo: {self.sem_type}]" if self.sem_type not in ["Void",""] else ""
+        val  = f"  [val: {self.sem_value}]" if self.sem_value is not None else ""
+
         if k == "ProgramK":
             return "Programa"
-
-        # ── Declaraciones ─────────────────────────────────────
         if k == "DeclK":
-            if dk == "VarDeclK":
-                return "Declaración de variable"
-            if dk == "TypeK":
-                return f"Tipo: {self.attr.get('type','?')}"
-
-        # ── Sentencias ────────────────────────────────────────
+            if dk == "VarDeclK": return "Declaración de variable"
+            if dk == "TypeK":    return f"Tipo: {self.attr.get('type','?')}"
         if k == "StmtK":
-            if sk == "SelectionK":
-                return "Selección (if)"
-            if sk == "IterationK":
-                return "Iteración (while)"
-            if sk == "RepetitionK":
-                return "Repetición (do-while)"
+            if sk == "SelectionK":  return "Selección (if)"
+            if sk == "IterationK":  return "Iteración (while)"
+            if sk == "RepetitionK": return "Repetición (do-while)"
             if sk == "AssignK":
-                name = self.attr.get("name","?")
-                t    = f"  [tipo: {self.sem_type}]" if self.sem_type != "Void" else ""
-                return f"Asignación: {name}{t}"
+                return f"Asignación: {self.attr.get('name','?')}{tipo}{val}"
             if sk == "SentInK":
-                name = self.attr.get("name","?")
-                t    = f"  [tipo: {self.sem_type}]" if self.sem_type != "Void" else ""
-                return f"Leer (cin): {name}{t}"
+                return f"Leer (cin): {self.attr.get('name','?')}{tipo}"
             if sk == "SentOutK":
                 return "Escribir (cout)"
-
-        # ── Expresiones ───────────────────────────────────────
         if k == "ExpK":
-            tipo = f"  [tipo: {self.sem_type}]" if self.sem_type != "Void" else ""
-            val  = f"  [val: {self.sem_value}]"  if self.sem_value is not None else ""
-
             if ek == "ConstK":
                 return f"Constante: {self.attr.get('val','?')}{tipo}{val}"
             if ek == "BoolK":
-                return f"Bool: {self.attr.get('val','?')}{tipo}"
+                return f"Bool: {self.attr.get('val','?')}{tipo}{val}"
             if ek == "IdK":
                 name = self.attr.get("name","?")
-                sym  = f"  [decl. línea {self.symbol.lines.lineno}]" if self.symbol else ""
-                return f"Id: {name}{tipo}{sym}"
+                sym  = (f"  [decl. línea {self.symbol.lines.lineno}]"
+                        if self.symbol else "")
+                return f"Id: {name}{tipo}{val}{sym}"
             if ek == "StringK":
                 return f"Cadena: {self.attr.get('val','?')}{tipo}"
             if ek == "OpK":
@@ -200,20 +187,13 @@ class AnnotatedNode:
                 return f"Operador: {op}{tipo}{val}"
             if ek == "LogicK":
                 op = OPS.get(self.attr.get("op","?"), self.attr.get("op","?"))
-                return f"Lógico: {op}{tipo}"
-
+                return f"Lógico: {op}{tipo}{val}"
         return f"Nodo: {k}"
 
 
 # ─────────────────────────────────────────────────────────────
 # ANALIZADOR SEMÁNTICO
 # ─────────────────────────────────────────────────────────────
-
-OPS = {
-    "MAS":"+","MENOS":"-","MUL":"*","DIV":"/","MOD":"%","POT":"^",
-    "LT":"<","LE":"<=","GT":">","GE":">=","EQ":"==","NE":"!=",
-    "INC":"++","DEC":"--","AND":"&&","OR":"||","NOT":"!","SHL":"<<","SHR":">>"
-}
 
 class SemanticAnalyzer:
 
@@ -223,35 +203,23 @@ class SemanticAnalyzer:
         self._current_decl_type = "Void"
         self._in_declaration    = False
 
-    # ── Traversal genérico ───────────────────────────────────
-    def traverse(self, node, pre_proc, post_proc):
-        if node is None:
-            return
-
-        current = node
-
-        while current is not None:
-            pre_proc(current)
-
-            for child in current.children:
-                self.traverse(child, pre_proc, post_proc)
-
-            post_proc(current)
-
-            current = current.sibling
-
-            #post_proc(node)
-
-    def _null_proc(self, node):
-        pass
-
     # ════════════════════════════════════════════════════════
-    # FASE 1 — buildSymtab (preorden sobre AST original)
-    # Solo declaracion_variable inserta en la tabla.
+    # FASE 1 — buildSymtab (igual que antes)
     # ════════════════════════════════════════════════════════
 
     def buildSymtab(self, syntax_tree):
-        self.traverse(syntax_tree, self._insertNode, self._exitDeclNode)
+        self._traverse_build(syntax_tree)
+
+    def _traverse_build(self, node):
+        if node is None:
+            return
+        current = node
+        while current is not None:
+            self._insertNode(current)
+            for child in current.children:
+                self._traverse_build(child)
+            self._exitDeclNode(current)
+            current = current.sibling
 
     def _insertNode(self, node):
         k = node.nodekind
@@ -261,7 +229,6 @@ class SemanticAnalyzer:
                 self._current_decl_type = node.attr.get("type","Void")
                 self._in_declaration    = True
             return
-
         if k == "ExpK" and node.kind.get("exp") == "IdK":
             name = node.attr.get("name","")
             if not name:
@@ -281,47 +248,48 @@ class SemanticAnalyzer:
             self._current_decl_type = "Void"
 
     # ════════════════════════════════════════════════════════
-    # FASE 2 — construir árbol anotado + verificar tipos
+    # FASE 2 — árbol anotado en ORDEN SECUENCIAL
+    # Se procesa cada sentencia en el orden en que aparece,
+    # usando el valor actualizado de la tabla en cada paso.
     # ════════════════════════════════════════════════════════
 
-    # >>> se agrega parámetro in_decl para saber si estamos
-    # dentro de una declaración de variable.
-    def buildAnnotatedTree(self, node, in_decl=False) -> AnnotatedNode:
+    def buildAnnotatedTree(self, node, in_decl=False):
         """
-        Construye recursivamente el árbol anotado a partir del AST original.
-        Propaga tipos de hojas a raíces (postorden implícito en la recursión).
-
-        in_decl: True si el nodo actual (o alguno de sus ancestros) es una
-                 declaración de variable. Sirve para NO registrar la línea
-                 de declaración como una línea de uso.
+        Construye el árbol anotado procesando los nodos en orden:
+          1. Anotar hijos de expresiones (postorden, para propagar tipos)
+          2. Anotar el nodo actual
+          3. Anotar hermanos EN ORDEN (para que las asignaciones anteriores
+             actualicen la tabla antes de que los hermanos las usen)
         """
         if node is None:
             return None
 
-        ann = AnnotatedNode(node)
+        ann = AnnotatedNode(
+            node.nodekind,
+            dict(node.kind),
+            dict(node.attr),
+            node.lineno,
+            node.type
+        )
 
-        # Detectar si este nodo inicia una declaración de variable
         is_vardecl = (node.nodekind == "DeclK"
                       and node.kind.get("decl") == "VarDeclK")
 
-        # Construir hijos primero (postorden: hijos antes que padre)
+        # Anotar hijos primero (las expresiones necesitan postorden)
         for i, child in enumerate(node.children):
-            ann.children[i] = self.buildAnnotatedTree(child, in_decl or is_vardecl)
+            ann.children[i] = self.buildAnnotatedTree(
+                child, in_decl or is_vardecl)
 
-        # Construir hermano
-        ann.sibling = self.buildAnnotatedTree(node.sibling, in_decl)
-
-        # Anotar este nodo según su tipo
+        # Anotar el nodo actual con los hijos ya anotados
         self._annotateNode(ann, in_decl)
+
+        # Anotar hermano DESPUÉS (orden secuencial: primero este nodo,
+        # luego el siguiente, así la tabla ya tiene el valor actualizado)
+        ann.sibling = self.buildAnnotatedTree(node.sibling, in_decl)
 
         return ann
 
-    # >>> CAMBIO: se agrega parámetro in_decl.
-    def _annotateNode(self, ann: AnnotatedNode, in_decl=False):
-        """
-        Calcula y propaga atributos semánticos para un nodo.
-        Los hijos ya están anotados cuando se llama a este método.
-        """
+    def _annotateNode(self, ann, in_decl=False):
         k  = ann.nodekind
         ek = ann.kind.get("exp","")
         sk = ann.kind.get("stmt","")
@@ -330,141 +298,45 @@ class SemanticAnalyzer:
         # ── Expresiones ──────────────────────────────────────
         if k == "ExpK":
 
-            # Constante numérica
             if ek == "ConstK":
-                ann.sem_type  = ann.type   # INTEGER o FLOAT, asignado por parser
+                ann.sem_type  = ann.type
                 ann.sem_value = ann.attr.get("val")
 
-            # Booleano literal
             elif ek == "BoolK":
                 ann.sem_type  = "Boolean"
                 ann.sem_value = ann.attr.get("val")
 
-            # Cadena
             elif ek == "StringK":
                 ann.sem_type  = "String"
                 ann.sem_value = ann.attr.get("val")
 
-            # Identificador en uso
             elif ek == "IdK":
                 name   = ann.attr.get("name","")
                 bucket = self.symtab.st_lookup(name)
                 if bucket is None:
                     self._semErrorAnn(ann, f"variable '{name}' usada sin declarar")
-                    ann.sem_type = "Void"
+                    ann.sem_type  = "Void"
+                    ann.sem_value = None
                 else:
-                    # >>>  si estamos dentro de una declaración,
-                    # NO registramos la línea como uso (ya fue registrada
-                    # al insertar el símbolo en buildSymtab).
                     if not in_decl:
                         self.symtab.st_add_line(name, ann.lineno)
-                    ann.sem_type = bucket.type
-                    ann.symbol   = bucket
+                    ann.sem_type  = bucket.type
+                    ann.symbol    = bucket
+                    # Tomar el valor ACTUAL de la tabla en este momento
+                    ann.sem_value = bucket.value
 
-            # Operador aritmético / relacional
             elif ek == "OpK":
-                op   = ann.attr.get("op","")
-                left  = ann.children[0]
-                right = ann.children[1]
-                l_t   = left.sem_type  if left  else "Void"
-                r_t   = right.sem_type if right else "Void"
+                self._evalOp(ann)
 
-                if op in ["LT","LE","GT","GE","EQ","NE"]:
-                    if l_t not in ["Integer","Float","Void"] or \
-                       r_t not in ["Integer","Float","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operandos numéricos "
-                            f"(se encontró {l_t}, {r_t})")
-                    ann.sem_type = "Boolean"
-
-                elif op in ["MAS","MENOS","MUL","DIV","MOD","POT"]:
-                    if l_t not in ["Integer","Float","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operando izquierdo numérico ({l_t})")
-                    if r_t not in ["Integer","Float","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operando derecho numérico ({r_t})")
-                    ann.sem_type = "Float" if "Float" in [l_t, r_t] else "Integer"
-
-                    # Propagación de valor constante
-                    if left and right and \
-                       left.sem_value is not None and right.sem_value is not None:
-                        try:
-                            lv, rv = left.sem_value, right.sem_value
-                            if op == "MAS":   ann.sem_value = lv + rv
-                            elif op == "MENOS": ann.sem_value = lv - rv
-                            elif op == "MUL":   ann.sem_value = lv * rv
-                            elif op == "DIV" and rv != 0:
-                                ann.sem_value = lv // rv if ann.sem_type == "Integer" else lv / rv
-                            elif op == "MOD" and rv != 0:
-                                ann.sem_value = lv % rv
-                            elif op == "POT":
-                                ann.sem_value = lv ** rv
-                        except Exception:
-                            ann.sem_value = None
-
-                elif op in ["INC","DEC"]:
-                    if l_t not in ["Integer","Float","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operando numérico ({l_t})")
-                    ann.sem_type = l_t
-
-            # Operador lógico
             elif ek == "LogicK":
-                op    = ann.attr.get("op","")
-                left  = ann.children[0]
-                right = ann.children[1]
-                l_t   = left.sem_type  if left  else "Void"
-                r_t   = right.sem_type if right else "Void"
-
-                if op == "NOT":
-                    if l_t not in ["Boolean","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '!' requiere operando Boolean ({l_t})")
-                    if left and left.sem_value is not None:
-                        ann.sem_value = not left.sem_value
-                else:
-                    if l_t not in ["Boolean","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operando izquierdo Boolean ({l_t})")
-                    if r_t not in ["Boolean","Void"]:
-                        self._semErrorAnn(ann,
-                            f"operador '{OPS.get(op,op)}' requiere operando derecho Boolean ({r_t})")
-                ann.sem_type = "Boolean"
+                self._evalLogic(ann)
 
         # ── Sentencias ───────────────────────────────────────
         elif k == "StmtK":
 
-            # Asignación
             if sk == "AssignK":
-                name   = ann.attr.get("name","")
-                bucket = self.symtab.st_lookup(name)
-                expr   = ann.children[0]
+                self._evalAssign(ann)
 
-                if bucket is None:
-                    self._semErrorAnn(ann, f"variable '{name}' usada sin declarar")
-                else:
-                    self.symtab.st_add_line(name, ann.lineno)
-                    ann.sem_type = bucket.type
-                    ann.symbol   = bucket
-
-                    if expr:
-                        var_t  = bucket.type
-                        expr_t = expr.sem_type
-                        if var_t == "Integer" and expr_t == "Float":
-                            self._semErrorAnn(ann,
-                                f"no se puede asignar Float a '{name}' (Integer)")
-                        elif var_t == "Boolean" and expr_t not in ["Boolean","Void"]:
-                            self._semErrorAnn(ann,
-                                f"no se puede asignar {expr_t} a '{name}' (Boolean)")
-                        elif var_t == "Float" and expr_t not in ["Integer","Float","Void"]:
-                            self._semErrorAnn(ann,
-                                f"no se puede asignar {expr_t} a '{name}' (Float)")
-                        elif var_t == "Integer" and expr_t not in ["Integer","Void"]:
-                            self._semErrorAnn(ann,
-                                f"no se puede asignar {expr_t} a '{name}' (Integer)")
-
-            # cin >> id
             elif sk == "SentInK":
                 name   = ann.attr.get("name","")
                 bucket = self.symtab.st_lookup(name)
@@ -474,31 +346,235 @@ class SemanticAnalyzer:
                     self.symtab.st_add_line(name, ann.lineno)
                     ann.sem_type = bucket.type
                     ann.symbol   = bucket
+                    # cin invalida el valor (viene del usuario)
+                    bucket.value = None
 
-            # if — condición debe ser Boolean
             elif sk == "SelectionK":
                 cond = ann.children[0]
                 if cond and cond.sem_type not in ["Boolean","Void"]:
                     self._semErrorAnn(ann,
-                        f"condición del 'if' debe ser Boolean (se encontró {cond.sem_type})")
+                        f"condición del 'if' debe ser Boolean "
+                        f"(se encontró {cond.sem_type})")
 
-            # while — condición debe ser Boolean
             elif sk == "IterationK":
                 cond = ann.children[0]
                 if cond and cond.sem_type not in ["Boolean","Void"]:
                     self._semErrorAnn(ann,
-                        f"condición del 'while' debe ser Boolean (se encontró {cond.sem_type})")
+                        f"condición del 'while' debe ser Boolean "
+                        f"(se encontró {cond.sem_type})")
 
-            # do-while — condición debe ser Boolean
             elif sk == "RepetitionK":
                 cond = ann.children[1]
                 if cond and cond.sem_type not in ["Boolean","Void"]:
                     self._semErrorAnn(ann,
-                        f"condición del 'do-while' debe ser Boolean (se encontró {cond.sem_type})")
+                        f"condición del 'do-while' debe ser Boolean "
+                        f"(se encontró {cond.sem_type})")
 
-        # ── Declaración de variable ───────────────────────────
         elif k == "DeclK" and dk == "TypeK":
             ann.sem_type = ann.attr.get("type","Void")
+
+    # ─── Evaluación de operadores aritméticos/relacionales ──
+    def _evalOp(self, ann):
+        op    = ann.attr.get("op","")
+        left  = ann.children[0]
+        right = ann.children[1]
+        l_t   = left.sem_type  if left  else "Void"
+        r_t   = right.sem_type if right else "Void"
+        l_v   = left.sem_value  if left  else None
+        r_v   = right.sem_value if right else None
+
+        # Relacionales → Boolean
+        if op in ["LT","LE","GT","GE","EQ","NE"]:
+            if l_t not in ["Integer","Float","Void"] or \
+               r_t not in ["Integer","Float","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '{OPS.get(op,op)}' requiere operandos numéricos "
+                    f"(se encontró {l_t}, {r_t})")
+            ann.sem_type = "Boolean"
+            if l_v is not None and r_v is not None:
+                try:
+                    ops_map = {
+                        "LT": lambda a,b: a<b,  "LE": lambda a,b: a<=b,
+                        "GT": lambda a,b: a>b,  "GE": lambda a,b: a>=b,
+                        "EQ": lambda a,b: a==b, "NE": lambda a,b: a!=b,
+                    }
+                    ann.sem_value = ops_map[op](l_v, r_v)
+                except Exception:
+                    ann.sem_value = None
+
+        # Aritméticos → numérico
+        elif op in ["MAS","MENOS","MUL","DIV","MOD","POT"]:
+            if l_t not in ["Integer","Float","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '{OPS.get(op,op)}' requiere operando "
+                    f"izquierdo numérico ({l_t})")
+            if r_t not in ["Integer","Float","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '{OPS.get(op,op)}' requiere operando "
+                    f"derecho numérico ({r_t})")
+            ann.sem_type = "Float" if "Float" in [l_t, r_t] else "Integer"
+            if l_v is not None and r_v is not None:
+                try:
+                    if op == "MAS":   ann.sem_value = l_v + r_v
+                    elif op == "MENOS": ann.sem_value = l_v - r_v
+                    elif op == "MUL":   ann.sem_value = l_v * r_v
+                    elif op == "DIV" and r_v != 0:
+                        ann.sem_value = (l_v // r_v
+                                         if ann.sem_type == "Integer"
+                                         else l_v / r_v)
+                    elif op == "MOD" and r_v != 0:
+                        ann.sem_value = l_v % r_v
+                    elif op == "POT":
+                        ann.sem_value = l_v ** r_v
+                except Exception:
+                    ann.sem_value = None
+
+        # ++ / -- sufijo
+        elif op in ["INC","DEC"]:
+            if l_t not in ["Integer","Float","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '{OPS.get(op,op)}' requiere operando "
+                    f"numérico ({l_t})")
+            ann.sem_type = l_t
+
+            if left and left.kind.get("exp") == "IdK":
+                name = left.attr.get("name","")
+                if l_v is not None:
+                    # Valor conocido → propagar
+                    ann.sem_value = l_v                # valor ANTES del inc/dec
+                    nuevo = l_v + 1 if op == "INC" else l_v - 1
+                    self.symtab.st_set_value(name, nuevo)
+                    if left.symbol:
+                        left.symbol.value = nuevo
+                """else:
+                    # Valor desconocido → asumir 0 antes del inc/dec.
+                    # Resultado:  1 / 1.0  si INC,  -1 / -1.0  si DEC,
+                    # según el tipo del operando (Integer o Float).
+                    delta = 1 if op == "INC" else -1
+                    if l_t == "Float":
+                        ann.sem_value = float(delta)   # 1.0  ó  -1.0
+                    else:
+                        ann.sem_value = int(delta)     # 1    ó  -1
+
+                    self.symtab.st_set_value(name, ann.sem_value)
+                    if left.symbol:
+                        left.symbol.value = ann.sem_value"""
+            else:
+                # Operando no es un Id (raro, pero por seguridad)
+                if l_v is not None:
+                    ann.sem_value = l_v
+
+    # ─── Evaluación de operadores lógicos ───────────────────
+    def _evalLogic(self, ann):
+        op    = ann.attr.get("op","")
+        left  = ann.children[0]
+        right = ann.children[1]
+        l_t   = left.sem_type  if left  else "Void"
+        r_t   = right.sem_type if right else "Void"
+        l_v   = left.sem_value  if left  else None
+        r_v   = right.sem_value if right else None
+
+        ann.sem_type = "Boolean"
+
+        if op == "NOT":
+            if l_t not in ["Boolean","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '!' requiere operando Boolean ({l_t})")
+            if l_v is not None:
+                ann.sem_value = not bool(l_v)
+
+        elif op == "AND":
+            if l_t not in ["Boolean","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '&&' requiere operando izquierdo Boolean ({l_t})")
+            if r_t not in ["Boolean","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '&&' requiere operando derecho Boolean ({r_t})")
+            if l_v is not None and r_v is not None:
+                ann.sem_value = bool(l_v) and bool(r_v)
+            elif l_v is False:
+                ann.sem_value = False   # cortocircuito
+
+        elif op == "OR":
+            if l_t not in ["Boolean","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '||' requiere operando izquierdo Boolean ({l_t})")
+            if r_t not in ["Boolean","Void"]:
+                self._semErrorAnn(ann,
+                    f"operador '||' requiere operando derecho Boolean ({r_t})")
+            if l_v is not None and r_v is not None:
+                ann.sem_value = bool(l_v) or bool(r_v)
+            elif l_v is True:
+                ann.sem_value = True    # cortocircuito
+
+    # ─── Evaluación de asignación ────────────────────────────
+    def _evalAssign(self, ann):
+        name   = ann.attr.get("name","")
+        bucket = self.symtab.st_lookup(name)
+        expr   = ann.children[0]
+
+        if bucket is None:
+            self._semErrorAnn(ann, f"variable '{name}' usada sin declarar")
+            return
+
+        self.symtab.st_add_line(name, ann.lineno)
+        ann.sem_type = bucket.type
+        ann.symbol   = bucket
+
+        if expr is None:
+            return
+
+        var_t  = bucket.type
+        expr_t = expr.sem_type
+        # Marca si hubo error de tipo, para NO propagar valor
+        tipo_error = False
+
+        # Verificación de tipos
+        if var_t == "Integer" and expr_t == "Float":
+            self._semErrorAnn(ann,
+                f"no se puede asignar Float a '{name}' (Integer)")
+            tipo_error = True
+        elif var_t == "Boolean" and expr_t not in ["Boolean","Void"]:
+            self._semErrorAnn(ann,
+                f"no se puede asignar {expr_t} a '{name}' (Boolean)")
+            tipo_error = True
+        elif var_t == "Float" and expr_t not in ["Integer","Float","Void"]:
+            self._semErrorAnn(ann,
+                f"no se puede asignar {expr_t} a '{name}' (Float)")
+            tipo_error = True
+        elif var_t == "Integer" and expr_t not in ["Integer","Void"]:
+            self._semErrorAnn(ann,
+                f"no se puede asignar {expr_t} a '{name}' (Integer)")
+            tipo_error = True
+
+        if (expr.kind.get("exp") == "OpK"
+                and expr.attr.get("op") in ("INC", "DEC")
+                and expr.children[0] is not None
+                and expr.children[0].kind.get("exp") == "IdK"
+                and expr.children[0].attr.get("name") == name):
+            ann.sem_value = bucket.value   # ya lo dejó el ++/-- en la tabla
+            return
+
+        # ── Si hubo error de tipo: no guardar valor ──────────
+        # El valor de la variable queda en 0 (default de su tipo).
+        # En la tabla el valor se representa como None (desconocido).
+        if tipo_error:
+            self.symtab.st_set_value(name, None)
+            bucket.value  = None
+            ann.sem_value = None
+            return
+
+        # Actualizar valor en la tabla con el resultado de la expresión
+        # (aunque haya error de tipo, actualizamos para seguir propagando)
+        if expr.sem_value is not None:
+            self.symtab.st_set_value(name, expr.sem_value)
+            bucket.value  = expr.sem_value
+            ann.sem_value = expr.sem_value
+        else:
+            # La expresión no tiene valor conocido → la variable tampoco
+            self.symtab.st_set_value(name, None)
+            bucket.value  = None
+            ann.sem_value = None
 
     # ── Errores ──────────────────────────────────────────────
     def _semError(self, node, message):
@@ -507,7 +583,7 @@ class SemanticAnalyzer:
         self.errors.append(error_msg)
         print(error_msg)
 
-    def _semErrorAnn(self, ann: AnnotatedNode, message):
+    def _semErrorAnn(self, ann, message):
         error_msg = f"Error semántico en línea {ann.lineno}: {message}"
         ann.sem_error = message
         self.errors.append(error_msg)
@@ -528,19 +604,10 @@ class SemanticAnalyzer:
 
     # ── Punto de entrada ─────────────────────────────────────
     def analyze(self, syntax_tree):
-        """
-        Ejecuta las dos fases y devuelve (annotated_tree, tabla_str, errores_str).
-        """
-        # Fase 1: poblar la tabla con declaraciones
         self.buildSymtab(syntax_tree)
-
-        # Fase 2: construir árbol anotado + verificar tipos
         annotated_tree = self.buildAnnotatedTree(syntax_tree)
-
         self.saveErrorsToFile()
-
         tabla_str   = self.symtab.printSymTab()
-        errores_str = "\n".join(self.errors) if self.errors \
-                      else " Sin errores semánticos"
-
+        errores_str = ("\n".join(self.errors) if self.errors
+                       else "Sin errores semánticos")
         return annotated_tree, tabla_str, errores_str
