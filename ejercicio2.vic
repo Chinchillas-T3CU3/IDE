@@ -1,0 +1,15 @@
+// Ejercicio 2 (SELECTIVO) con float:  T = N / 4 + 40
+main {
+    int n;
+    float temperatura;
+    
+    cout<<"Ingresa el  numero de sonidos emitidos por el grillo en un minuto";
+    cin >> n;
+
+    if n < 0 then
+        cout << "Numero de sonidos invalido";
+    else
+        temperatura = n / 4.0 + 40;
+        cout << "Temperatura en F: " << temperatura;
+    end
+}

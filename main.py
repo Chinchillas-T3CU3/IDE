@@ -12,6 +12,7 @@ from contador_lineas import CodeEditor
 from PyQt6.QtGui import QAction, QIcon
 from lexico import Scanner
 import os
+import subprocess
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -404,13 +405,14 @@ class CompilerIDE(QMainWindow):
 
         #self.lexicoCode()
         #self.SintacticCode()
-        self.semanticCode()
+        #self.semanticCode()
+        self.InterCodeCode() 
 
         # Simulación
         #self.tab_sintactico.setText("Resultado análisis sintáctico")
         #self.tab_semantico.setText("Resultado análisis semántico")
         #self.tab_tabla.setText("Tabla de símbolos")
-        self.tab_codigo.setText("Código intermedio generado")
+        #self.tab_codigo.setText("Código intermedio generado")
         #self.error_sintactico.setText("Errores de análisis sintáctico")
         #self.error_semantico.setText("Errores de análisis semántico")
         self.result_compilado.setText("Resultado completo")
@@ -691,6 +693,7 @@ class CompilerIDE(QMainWindow):
         self.tab_semantico.clear()
         self.tab_tabla.clear()
         self.error_semantico.clear()
+        self._semantic_analyzer = None
 
         self.SintacticCode()
  
@@ -722,6 +725,7 @@ class CompilerIDE(QMainWindow):
  
             # Análisis semántico completo
             analyzer                          = SemanticAnalyzer()
+            self._semantic_analyzer           = analyzer        # ← agrega esta línea
             annotated_tree, tabla_str, err_str = analyzer.analyze(syntax_tree)
  
             # ── Árbol anotado en tab_semantico ───────────────
@@ -824,9 +828,106 @@ class CompilerIDE(QMainWindow):
         self.tabs.setCurrentWidget(self.tab_tabla)
 
     def InterCodeCode(self):
-        self.tab_codigo.setText("Código intermedio generado")
+        self.tab_codigo.clear()
+        self._semantic_analyzer = None
 
-    
+        # Ejecuta lexico + sintactico + semantico
+        self.semanticCode()
+
+        for archivo, fase in [("errores.txt", "léxicos"),
+                              ("erroresSin.txt", "sintácticos")]:
+            if os.path.exists(archivo):
+                with open(archivo, "r", encoding="utf-8") as f:
+                    if f.read().strip():
+                        self.tab_codigo.setText(
+                            f"No se genera código: hay errores {fase}.")
+                        return
+
+        if self._semantic_analyzer is None or self._semantic_analyzer.errors:
+            self.tab_codigo.setText(
+                "No se genera código: hay errores semánticos.")
+            return
+
+        try:
+            from parse             import Parser
+            from codigoIntermedio import TDCODE
+            from codigo_tm         import CGen
+
+            syntax_tree = Parser("tokens.txt").parse()
+
+            # ── 1. Cuadruplas ────────────────────────────────
+            cuadruplas = "\n".join(TDCODE().generate(syntax_tree))
+
+            # ── 2. Codigo TM ─────────────────────────────────
+            generador = CGen(self._semantic_analyzer.symtab)
+            codigo_tm = generador.generate(syntax_tree, "codigo.tm")
+            if generador.avisos:
+                codigo_tm += "* AVISOS:\n"
+                for a in generador.avisos:
+                    codigo_tm += f"* {a}\n"
+
+            # ── Mostrar ambos en el tab ──────────────────────
+            linea = "=" * 60
+            texto = (f"{linea}\nCÓDIGO INTERMEDIO (cuádruplas)\n{linea}\n"
+                     f"{cuadruplas}\n\n"
+                     f"{linea}\nCÓDIGO TM (ejecutable con tm.exe)\n{linea}\n"
+                     f"{codigo_tm}")
+            self.tab_codigo.setText(texto)
+
+            # ── Guardar cada uno en su archivo ───────────────
+            with open("codigo_intermedio.txt", "w", encoding="utf-8") as f:
+                f.write(cuadruplas + "\n")
+
+            # codigo.tm solo lleva codigo TM (y comentarios con *)
+            with open("codigo.tm", "w", encoding="ascii", errors="replace") as f:
+                f.write(codigo_tm)
+
+            self.tabs.setCurrentWidget(self.tab_codigo)
+
+            # ── 3. Ejecutar tm.exe con codigo.tm ─────────────
+            self._ejecutarTM()
+
+        except Exception as e:
+            self.tab_codigo.setText(f"Error generando código: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _ejecutarTM(self):
+        """Abre tm.exe en una consola nueva (no bloquea la GUI)."""
+        self.result_compilado.clear()
+
+        base = os.path.dirname(os.path.abspath(__file__))
+        tm_path = os.path.join(base, "tm.exe")
+        tm_file = os.path.join(base, "codigo.tm")
+
+        if not os.path.exists(tm_path):
+            self.result_compilado.setText(
+                f"No se encontró tm.exe en:\n{tm_path}\n\n"
+                "Compílalo con: gcc tm.c -o tm.exe")
+            self.error_panel.setCurrentWidget(self.result_compilado)
+            return
+
+        if not os.path.exists(tm_file):
+            self.result_compilado.setText(
+                f"No se encontró codigo.tm en:\n{tm_file}")
+            self.error_panel.setCurrentWidget(self.result_compilado)
+            return
+
+        try:
+            # CREATE_NEW_CONSOLE = 0x00000010  (solo Windows)
+            proc = subprocess.Popen(
+                [tm_path, "codigo.tm"],
+                cwd=base,
+                creationflags=0x00000010,
+            )
+            self.result_compilado.setText(
+                f"tm.exe lanzado en una consola nueva.\n"
+                f"PID: {proc.pid}\n\n"
+                f"La salida aparece en la ventana de consola que se abrió.")
+        except Exception as e:
+            self.result_compilado.setText(f"Error ejecutando tm.exe:\n{e}")
+
+        self.error_panel.setCurrentWidget(self.result_compilado)
 
 
 

@@ -1,0 +1,68 @@
+// Ejercicio 5 (REPETITIVO): produccion de vino, 5 tipos, N anios
+main {
+    int n, i, v1, v2, v3, v4, v5;
+    int t1, t2, t3, t4, t5, anual, max2, anio2;
+    bool hubo;
+    cout<<"ingrese el total de años";
+    cin >> n;
+    i = 1;
+    t1 = 0;
+    t2 = 0;
+    t3 = 0;
+    t4 = 0;
+    t5 = 0;
+    max2 = 0;
+    anio2 = 0;
+    hubo = false;
+
+    do
+        cout<<" ingrese cantidad de vinos tipo 1 en el año"<<i;
+        cin >> v1;
+       cout<<" ingrese cantidad de vinos tipo 2 en el año"<<i;
+        cin >> v2;
+         cout<<" ingrese cantidad de vinos tipo 3 en el año"<<i;
+        cin >> v3;
+        cout<<" ingrese cantidad de vinos tipo 4 en el año"<<i;
+        cin >> v4;
+        cout<<" ingrese cantidad de vinos tipo 5 en el año"<<i;
+        cin >> v5;
+
+        // a) total de cada tipo
+        t1 = t1 + v1;
+        t2 = t2 + v2;
+        t3 = t3 + v3;
+        t4 = t4 + v4;
+        t5 = t5 + v5;
+
+        // b) total por anio
+        anual = v1 + v2 + v3 + v4 + v5;
+        cout << "Anio: " << i;
+        cout << "Total del anio: " << anual;
+
+        // c) anio de mayor produccion del vino tipo 2
+        if i == 1 || v2 > max2 then
+            max2 = v2;
+            anio2 = i;
+        end
+
+        // d) anios sin produccion del vino tipo 3
+        if v3 == 0 then
+            hubo = true;
+            cout << "Anio sin vino tipo 3: " << i;
+        end
+
+        i = i + 1;
+    while i <= n;
+
+    cout << "Total vino 1: " << t1;
+    cout << "Total vino 2: " << t2;
+    cout << "Total vino 3: " << t3;
+    cout << "Total vino 4: " << t4;
+    cout << "Total vino 5: " << t5;
+    cout << "Anio con mas vino 2: " << anio2;
+    cout << "Litros producidos ese año: " << max2;
+
+    if !hubo then
+        cout << "Todos los anios hubo vino tipo 3";
+    end
+}

@@ -1,0 +1,12 @@
+main{
+int x,fact;
+cin >>x;
+if x>0 then
+    fact=1;
+    do 
+         fact=fact*x;
+         x=x--;
+   while x>0;
+   cout<<fact;
+end
+}

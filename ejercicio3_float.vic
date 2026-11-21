@@ -1,0 +1,26 @@
+// Ejercicio 3 (SELECTIVO) con float
+main {
+    float costo, impuesto, tasa, total;
+    cout<<"Ingresa el costo";
+    cin >> costo;
+
+    if costo <= 20 then
+        impuesto = 0;
+    else
+        if costo <= 40 then
+            impuesto = (costo - 20) * 0.30;
+        else
+            if costo > 500 then
+                tasa = 0.50;
+            else
+                tasa = 0.40;
+            end
+            impuesto = 6 + (costo - 40) * tasa;
+        end
+    end
+
+    total = costo + impuesto;
+
+    cout << "Impuesto: " << impuesto;
+    cout << "Precio total: " << total;
+}

@@ -1,0 +1,46 @@
+// Ejercicio 4 (REPETITIVO) con float
+// tipo: 1 = Internacional, 2 = Nacional, 3 = Local
+main {
+    int n, i, tipo, dur, locales;
+    float costo, total;
+    cout<<"Ingresa el numero  de llamadas ";
+    cin >> n;
+    i = 1;
+    total = 0;
+    locales = 0;
+
+    while i <= n
+        cout<<"Ingresa el tipo de llamada  tipo: 1 = Internacional, 2 = Nacional, 3 = Local";
+        cin >> tipo;
+        cout<<"Ingresa el la duracion en minutos de la llamada";
+        cin >> dur;
+
+        if tipo == 1 then
+            if dur <= 3 then
+                costo = 7.59;
+            else
+                costo = 7.59 + (dur - 3) * 3.03;
+            end
+        else
+            if tipo == 2 then
+                if dur <= 3 then
+                    costo = 1.20;
+                else
+                    costo = 1.20 + (dur - 3) * 0.48;
+                end
+            else
+                locales = locales + 1;
+                if locales > 50 then
+                    costo = 0.60;
+                else
+                    costo = 0;
+                end
+            end
+        end
+
+        total = total + costo;
+        i = i + 1;
+    end
+
+    cout << "Total a pagar: " << total;
+}

@@ -1,0 +1,26 @@
+// Ejercicio 1 (SECUENCIAL): matricula y promedio de 5 calificaciones
+main {
+    int matricula;
+    float c1, c2, c3, c4, c5;
+    float suma, promedio;
+    cout<<"Ingrese su matricula";
+    cin >> matricula;
+    cout<<"Ingrese su calificacion 1";
+    cin >> c1;
+    cout<<"Ingrese su calificacion 2";
+    cin >> c2;
+    cout<<"Ingrese su calificacion 3";
+    cin >> c3;
+    cout<<"Ingrese su calificacion 4";
+    cin >> c4;
+    cout<<"Ingrese su calificacion 5";
+    cin >> c5;
+
+    suma = c1 + c2 + c3 + c4 + c5;
+    promedio = suma / 5;
+    
+
+    cout << "Matricula: " << matricula;
+    cout << "Promedio: " << promedio;
+    
+}
